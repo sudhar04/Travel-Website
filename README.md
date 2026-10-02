@@ -1,4 +1,4 @@
-# Karai Travels — Travel & Cab Website
+# 🚗 Karai Travels — Travel & Cab Website
 
 <p align="center">
   <strong>A modern, responsive travel and cab booking website built with React, TypeScript, Vite and Tailwind CSS.</strong>
