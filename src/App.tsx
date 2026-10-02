@@ -1,6 +1,7 @@
 import Navbar from '../src/components/Navbar'
 import Hero from '../src/components/Hero'
 import BookingForm from "./components/BookingForm";
+import Footer from "./components/Footer";
 
 function App() {
   
@@ -10,6 +11,7 @@ function App() {
       <Navbar />
       <Hero />
       <BookingForm />
+      <Footer />
     </>
   )
 }
