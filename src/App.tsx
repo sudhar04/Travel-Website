@@ -2,6 +2,8 @@ import Navbar from '../src/components/Navbar'
 import Hero from '../src/components/Hero'
 import BookingForm from "./components/BookingForm";
 import WhatWeOffer from "./components/WhatWeOffer";
+import WhereWeGo from "./components/WhereWeGo";
+import PopularRoutes from "./components/PopularRoutes";
 import WhyTravelWithUs from "./components/WhyTravelWithUs";
 import HowItWorks from "./components/HowItWorks";
 import MoreThanRide from "./components/MoreThanRide";
@@ -19,6 +21,8 @@ function App() {
       <Hero />
       <BookingForm />
       <WhatWeOffer />
+      <WhereWeGo />
+      <PopularRoutes />
       <WhyTravelWithUs />
       <HowItWorks />
       <MoreThanRide />
