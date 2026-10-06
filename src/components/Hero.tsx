@@ -1,9 +1,86 @@
-import React from "react";
-import heroImage from "../assets/hero-road.jpg";
+import React, { useEffect } from "react";
+import ScrollReveal from "scrollreveal";
+
+import heroImage from "../assets/hero-road1.png";
 
 const WHATSAPP_NUMBER = "919XXXXXXXXX";
 
 const Hero: React.FC = () => {
+  /*
+   * =========================================================
+   * SCROLL REVEAL
+   * =========================================================
+   */
+
+  useEffect(() => {
+    const reveal = ScrollReveal();
+
+    reveal.reveal(".hero-eyebrow", {
+      distance: "20px",
+      origin: "bottom",
+      duration: 800,
+      delay: 150,
+      easing: "cubic-bezier(0.5, 0, 0, 1)",
+      opacity: 0,
+      reset: false,
+      mobile: true,
+    });
+
+    reveal.reveal(".hero-title", {
+      distance: "35px",
+      origin: "bottom",
+      duration: 1000,
+      delay: 280,
+      easing: "cubic-bezier(0.5, 0, 0, 1)",
+      opacity: 0,
+      reset: false,
+      mobile: true,
+    });
+
+    reveal.reveal(".hero-description", {
+      distance: "25px",
+      origin: "bottom",
+      duration: 850,
+      delay: 450,
+      easing: "cubic-bezier(0.5, 0, 0, 1)",
+      opacity: 0,
+      reset: false,
+      mobile: true,
+    });
+
+    reveal.reveal(".hero-actions", {
+      distance: "25px",
+      origin: "bottom",
+      duration: 850,
+      delay: 600,
+      easing: "cubic-bezier(0.5, 0, 0, 1)",
+      opacity: 0,
+      reset: false,
+      mobile: true,
+    });
+
+    reveal.reveal(".hero-benefits", {
+      distance: "20px",
+      origin: "bottom",
+      duration: 800,
+      delay: 750,
+      easing: "cubic-bezier(0.5, 0, 0, 1)",
+      opacity: 0,
+      reset: false,
+      mobile: true,
+    });
+
+    return () => {
+      reveal.destroy();
+    };
+  }, []);
+
+  /*
+   * =========================================================
+   * WHATSAPP
+   * =========================================================
+   */
+
   const handleWhatsApp = () => {
     window.open(
       `https://wa.me/${WHATSAPP_NUMBER}`,
@@ -12,13 +89,17 @@ const Hero: React.FC = () => {
     );
   };
 
+  /*
+   * =========================================================
+   * PLAN MY RIDE
+   * =========================================================
+   */
+
   const handlePlanRide = () => {
-    document
-      .getElementById("book-a-ride")
-      ?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
+    document.getElementById("book-a-ride")?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
   };
 
   return (
@@ -26,56 +107,71 @@ const Hero: React.FC = () => {
       id="home"
       className="
         relative
-        min-h-[760px]
+        h-[720px]
+        min-h-[680px]
         w-full
         overflow-hidden
         bg-[#111]
-        sm:min-h-[780px]
-        lg:min-h-[790px]
+        sm:h-[750px]
+        sm:min-h-[700px]
+        lg:h-[790px]
+        lg:min-h-[720px]
       "
     >
       {/* =====================================================
           BACKGROUND IMAGE
-      ====================================================== */}
+      ===================================================== */}
 
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 overflow-hidden">
+
         <img
           src={heroImage}
           alt="Coastal road near Puducherry"
           className="
+            absolute
+            inset-0
             h-full
             w-full
             object-cover
-            object-center
+            object-[center_62%]
+            sm:object-[center_60%]
+            lg:object-[center_58%]
           "
         />
+
       </div>
 
       {/* =====================================================
           DARK OVERLAY
-      ====================================================== */}
+      ===================================================== */}
 
       <div
         className="
           absolute
           inset-0
-          bg-black/45
+          bg-black/40
         "
       />
 
-      {/* Stronger bottom darkness */}
+      {/* =====================================================
+          TOP / BOTTOM GRADIENT
+      ===================================================== */}
+
       <div
         className="
           absolute
           inset-0
           bg-gradient-to-b
           from-black/35
-          via-black/20
+          via-black/10
           to-[#0c1112]/85
         "
       />
 
-      {/* Slight left-side darkness for text readability */}
+      {/* =====================================================
+          LEFT GRADIENT
+      ===================================================== */}
+
       <div
         className="
           absolute
@@ -83,15 +179,15 @@ const Hero: React.FC = () => {
           left-0
           w-full
           bg-gradient-to-r
-          from-black/35
-          via-transparent
+          from-black/50
+          via-black/15
           to-transparent
         "
       />
 
       {/* =====================================================
           HERO CONTENT
-      ====================================================== */}
+      ===================================================== */}
 
       <div
         className="
@@ -99,45 +195,38 @@ const Hero: React.FC = () => {
           z-10
           mx-auto
           flex
-          min-h-[760px]
+          h-full
           w-full
           max-w-[1320px]
           items-center
           px-5
-          pb-[105px]
-          pt-[115px]
-
-          sm:min-h-[780px]
+          pb-[70px]
+          pt-[105px]
           sm:px-6
-          sm:pb-[110px]
-
-          lg:min-h-[790px]
+          sm:pb-[75px]
+          sm:pt-[110px]
           lg:px-8
-          lg:pb-[105px]
+          lg:pb-[80px]
+          lg:pt-[120px]
         "
       >
-        <div
-          className="
-            w-full
-            max-w-[700px]
-          "
-        >
+        <div className="w-full max-w-[700px]">
+
           {/* =================================================
               EYEBROW
-          ================================================== */}
+          ================================================= */}
 
           <p
             className="
+              hero-eyebrow
               mb-5
               text-[11px]
               font-semibold
               uppercase
               tracking-[0.19em]
-              text-white/85
-
+              text-white/90
               sm:text-[12px]
               sm:tracking-[0.20em]
-
               lg:mb-6
             "
           >
@@ -146,23 +235,21 @@ const Hero: React.FC = () => {
 
           {/* =================================================
               MAIN HEADING
-          ================================================== */}
+          ================================================= */}
 
           <h1
             className="
+              hero-title
               max-w-[680px]
-              text-[48px]
+              text-[46px]
               font-bold
               leading-[0.98]
               tracking-[-0.045em]
               text-white
-
-              sm:text-[58px]
+              sm:text-[56px]
               sm:leading-[0.97]
-
-              md:text-[66px]
-
-              lg:text-[76px]
+              md:text-[64px]
+              lg:text-[74px]
               lg:leading-[0.96]
             "
           >
@@ -175,23 +262,22 @@ const Hero: React.FC = () => {
 
           {/* =================================================
               DESCRIPTION
-          ================================================== */}
+          ================================================= */}
 
           <p
             className="
-              mt-7
+              hero-description
+              mt-6
               max-w-[650px]
-              text-[16px]
+              text-[15px]
               font-normal
               leading-[1.65]
               text-white/85
-
               sm:mt-7
               sm:text-[17px]
-
               lg:mt-6
               lg:text-[18px]
-              lg:leading-[1.65]
+              lg:leading-[1.6]
             "
           >
             Reliable cab and outstation travel from Puducherry
@@ -201,21 +287,23 @@ const Hero: React.FC = () => {
 
           {/* =================================================
               CTA BUTTONS
-          ================================================== */}
+          ================================================= */}
 
           <div
             className="
-              mt-8
+              hero-actions
+              mt-7
               flex
               flex-col
               gap-3
-
-              sm:mt-9
+              sm:mt-8
               sm:flex-row
               sm:items-center
             "
           >
-            {/* Plan My Ride */}
+
+            {/* PLAN MY RIDE */}
+
             <button
               type="button"
               onClick={handlePlanRide}
@@ -233,18 +321,13 @@ const Hero: React.FC = () => {
                 text-[16px]
                 font-semibold
                 text-white
-
                 shadow-[0_8px_25px_rgba(0,0,0,0.15)]
-
                 transition-all
                 duration-300
-
                 hover:-translate-y-[1px]
                 hover:bg-[#005d64]
                 hover:shadow-[0_12px_30px_rgba(0,0,0,0.22)]
-
                 active:translate-y-0
-
                 sm:w-auto
               "
             >
@@ -279,7 +362,8 @@ const Hero: React.FC = () => {
               </svg>
             </button>
 
-            {/* WhatsApp */}
+            {/* WHATSAPP */}
+
             <button
               type="button"
               onClick={handleWhatsApp}
@@ -299,17 +383,16 @@ const Hero: React.FC = () => {
                 font-semibold
                 text-white
                 backdrop-blur-[3px]
-
                 transition-all
                 duration-300
-
                 hover:border-white/45
                 hover:bg-white/10
-
                 sm:w-auto
               "
             >
-              {/* Chat / WhatsApp style icon */}
+
+              {/* WhatsApp icon */}
+
               <svg
                 width="20"
                 height="20"
@@ -335,24 +418,24 @@ const Hero: React.FC = () => {
 
               <span>WhatsApp Us</span>
             </button>
+
           </div>
 
           {/* =================================================
               BENEFITS
-          ================================================== */}
+          ================================================= */}
 
           <div
             className="
-              mt-8
+              hero-benefits
+              mt-7
               grid
               grid-cols-1
               gap-y-3
-
-              sm:mt-9
+              sm:mt-8
               sm:grid-cols-2
               sm:gap-x-8
               sm:gap-y-3
-
               lg:flex
               lg:flex-wrap
               lg:gap-x-7
@@ -360,13 +443,11 @@ const Hero: React.FC = () => {
             "
           >
             <Benefit text="Comfortable rides" />
-
             <Benefit text="Experienced drivers" />
-
             <Benefit text="Flexible travel" />
-
             <Benefit text="Direct WhatsApp booking" />
           </div>
+
         </div>
       </div>
     </section>
@@ -391,11 +472,9 @@ const Benefit: React.FC<BenefitProps> = ({ text }) => {
         text-[13px]
         font-medium
         text-white/85
-
         sm:text-[14px]
       "
     >
-      {/* Check */}
       <svg
         width="15"
         height="15"

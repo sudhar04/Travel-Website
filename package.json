@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "lucide-react": "^1.51.0",
+    "maplibre-gl": "^6.12.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "scrollreveal": "^4.0.9",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/leaflet": "^1.9.22",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",

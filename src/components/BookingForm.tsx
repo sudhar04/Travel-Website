@@ -1,5 +1,9 @@
 import { useState } from "react";
-import type { FormEvent } from "react";
+import type {
+  ChangeEvent,
+  FormEvent,
+  ReactNode,
+} from "react";
 
 interface BookingFormData {
   pickupLocation: string;
@@ -28,8 +32,14 @@ const BookingForm = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  /*
+   * =========================================================
+   * HANDLE FORM CHANGE
+   * =========================================================
+   */
+
   const handleChange = (
-    e: React.ChangeEvent<
+    e: ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
@@ -41,17 +51,154 @@ const BookingForm = () => {
     }));
   };
 
+  /*
+   * =========================================================
+   * FORMAT DATE
+   *
+   * Converts:
+   * 2026-10-20
+   *
+   * Into:
+   * 20-10-2026
+   * =========================================================
+   */
+
+  const formatDate = (date: string) => {
+    if (!date) {
+      return "Not specified";
+    }
+
+    const [year, month, day] = date.split("-");
+
+    if (!year || !month || !day) {
+      return date;
+    }
+
+    return `${day}-${month}-${year}`;
+  };
+
+  /*
+   * =========================================================
+   * FORMAT TIME
+   *
+   * Converts:
+   * 05:30
+   *
+   * Into:
+   * 05:30 AM
+   * =========================================================
+   */
+
+  const formatTime = (time: string) => {
+    if (!time) {
+      return "Not specified";
+    }
+
+    const [hoursString, minutes] = time.split(":");
+
+    const hours = Number(hoursString);
+
+    if (
+      Number.isNaN(hours) ||
+      !minutes
+    ) {
+      return time;
+    }
+
+    const suffix = hours >= 12 ? "PM" : "AM";
+
+    const formattedHour = hours % 12 || 12;
+
+    return `${String(formattedHour).padStart(
+      2,
+      "0"
+    )}:${minutes} ${suffix}`;
+  };
+
+  /*
+   * =========================================================
+   * HANDLE FORM SUBMIT
+   * =========================================================
+   */
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setIsSubmitting(true);
 
-    // Replace this with your actual booking / WhatsApp logic.
-    console.log("Booking details:", formData);
+    /*
+     * =======================================================
+     * KARAI TRAVELS WHATSAPP NUMBER
+     * =======================================================
+     *
+     * Country code included.
+     * No +, spaces or -
+     *
+     * Current Karai Travels number:
+     * 919342832151
+     */
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-    }, 1000);
+    const WHATSAPP_NUMBER = "919342832151";
+
+    /*
+     * =======================================================
+     * PREMIUM WHATSAPP BOOKING MESSAGE
+     * =======================================================
+     */
+
+    const message = `
+Hello Karai Travels! 👋
+
+I would like to request a ride.
+
+━━━━━━━━━━━━━━━━━━
+🚕 BOOKING DETAILS
+━━━━━━━━━━━━━━━━━━
+
+👤 Name: ${formData.name}
+
+📱 Phone / WhatsApp: ${formData.phone}
+
+📍 Pickup: ${formData.pickupLocation}
+
+📍 Drop: ${formData.dropLocation}
+
+📅 Journey Date: ${formatDate(formData.journeyDate)}
+
+🔄 Trip Type: ${formData.tripType}
+
+👥 Passengers: ${formData.passengers}
+
+⏰ Pickup Time: ${formatTime(formData.pickupTime)}
+
+📝 Additional Requirements:
+${formData.requirements || "Nothing"}
+
+━━━━━━━━━━━━━━━━━━
+
+Please confirm the availability and fare.
+
+Thank you!
+Karai Travels
+`.trim();
+
+    /*
+     * =======================================================
+     * WHATSAPP URL
+     * =======================================================
+     */
+
+    const whatsappUrl =
+      `https://wa.me/${WHATSAPP_NUMBER}` +
+      `?text=${encodeURIComponent(message)}`;
+
+    /*
+     * =======================================================
+     * REDIRECT TO WHATSAPP
+     * =======================================================
+     */
+
+    window.location.href = whatsappUrl;
   };
 
   return (
@@ -71,23 +218,17 @@ const BookingForm = () => {
           mx-auto
           w-full
           max-w-[1030px]
-
           rounded-[20px]
           border
           border-black/[0.04]
           bg-white
-
           px-5
           py-8
-
           shadow-[0_20px_55px_rgba(0,0,0,0.12)]
-
           sm:px-7
           sm:py-9
-
           md:px-8
           md:py-9
-
           lg:px-[34px]
           lg:py-[34px]
         "
@@ -95,6 +236,7 @@ const BookingForm = () => {
         {/* =====================================================
             HEADER
         ====================================================== */}
+
         <div className="mb-7">
           <p
             className="
@@ -116,11 +258,8 @@ const BookingForm = () => {
               leading-[1.15]
               tracking-[-0.035em]
               text-[#111111]
-
               sm:text-[30px]
-
               md:text-[32px]
-
               lg:text-[34px]
             "
           >
@@ -131,6 +270,7 @@ const BookingForm = () => {
         {/* =====================================================
             FORM
         ====================================================== */}
+
         <form onSubmit={handleSubmit}>
           <div
             className="
@@ -138,15 +278,14 @@ const BookingForm = () => {
               grid-cols-1
               gap-x-5
               gap-y-5
-
               md:grid-cols-2
-
               lg:grid-cols-3
             "
           >
             {/* =================================================
                 PICKUP LOCATION
             ================================================== */}
+
             <FormField
               label="Pickup Location"
               required
@@ -167,6 +306,7 @@ const BookingForm = () => {
             {/* =================================================
                 DROP LOCATION
             ================================================== */}
+
             <FormField
               label="Drop Location"
               required
@@ -187,6 +327,7 @@ const BookingForm = () => {
             {/* =================================================
                 JOURNEY DATE
             ================================================== */}
+
             <FormField
               label="Journey Date"
               required
@@ -206,6 +347,7 @@ const BookingForm = () => {
             {/* =================================================
                 TRIP TYPE
             ================================================== */}
+
             <FormField
               label="Trip Type"
               required
@@ -225,8 +367,13 @@ const BookingForm = () => {
                     pr-10
                   `}
                 >
-                  <option value="One Way">One Way</option>
-                  <option value="Round Trip">Round Trip</option>
+                  <option value="One Way">
+                    One Way
+                  </option>
+
+                  <option value="Round Trip">
+                    Round Trip
+                  </option>
                 </select>
               </div>
             </FormField>
@@ -234,6 +381,7 @@ const BookingForm = () => {
             {/* =================================================
                 PASSENGERS
             ================================================== */}
+
             <FormField
               label="Passengers"
               required
@@ -255,6 +403,7 @@ const BookingForm = () => {
             {/* =================================================
                 PICKUP TIME
             ================================================== */}
+
             <FormField
               label="Preferred Pickup Time"
               htmlFor="pickupTime"
@@ -272,6 +421,7 @@ const BookingForm = () => {
             {/* =================================================
                 PHONE
             ================================================== */}
+
             <FormField
               label="WhatsApp / Phone Number"
               required
@@ -292,6 +442,7 @@ const BookingForm = () => {
             {/* =================================================
                 NAME
             ================================================== */}
+
             <FormField
               label="Your Name"
               required
@@ -312,17 +463,20 @@ const BookingForm = () => {
             {/* =================================================
                 EMPTY GRID SPACE ON DESKTOP
             ================================================== */}
+
             <div className="hidden lg:block" />
 
             {/* =================================================
                 ADDITIONAL REQUIREMENTS
             ================================================== */}
+
             <div className="md:col-span-2 lg:col-span-3">
               <label
                 htmlFor="requirements"
                 className={labelClasses}
               >
                 Additional Requirements
+
                 <span className="ml-1 font-normal text-[#777]">
                   (Optional)
                 </span>
@@ -348,18 +502,21 @@ const BookingForm = () => {
           {/* =====================================================
               BOTTOM ACTIONS
           ====================================================== */}
+
           <div
             className="
               mt-7
               flex
               flex-col
               gap-4
-
               sm:flex-row
               sm:items-center
             "
           >
-            {/* Submit */}
+            {/* =================================================
+                SUBMIT
+            ================================================== */}
+
             <button
               type="submit"
               disabled={isSubmitting}
@@ -377,28 +534,24 @@ const BookingForm = () => {
                 text-[16px]
                 font-semibold
                 text-white
-
                 shadow-sm
-
                 transition-all
                 duration-300
-
                 hover:bg-[#005c63]
                 hover:shadow-md
-
                 active:scale-[0.99]
-
                 disabled:cursor-not-allowed
                 disabled:opacity-70
-
                 sm:w-auto
               "
             >
               {isSubmitting ? (
-                "Processing..."
+                "Opening WhatsApp..."
               ) : (
                 <>
-                  <span>Check &amp; Request Ride</span>
+                  <span>
+                    Check &amp; Request Ride
+                  </span>
 
                   <svg
                     width="18"
@@ -410,6 +563,7 @@ const BookingForm = () => {
                       duration-300
                       group-hover:translate-x-1
                     "
+                    aria-hidden="true"
                   >
                     <path
                       d="M5 12H19"
@@ -430,7 +584,10 @@ const BookingForm = () => {
               )}
             </button>
 
-            {/* Information */}
+            {/* =================================================
+                INFORMATION
+            ================================================== */}
+
             <div
               className="
                 flex
@@ -447,6 +604,7 @@ const BookingForm = () => {
                 viewBox="0 0 24 24"
                 fill="none"
                 className="shrink-0 text-[#006b73]"
+                aria-hidden="true"
               >
                 <circle
                   cx="12"
@@ -484,7 +642,7 @@ interface FormFieldProps {
   label: string;
   required?: boolean;
   htmlFor: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const FormField = ({
@@ -541,11 +699,8 @@ const inputClasses = `
   outline-none
   transition-all
   duration-200
-
   placeholder:text-[#7b8491]
-
   hover:border-[#c9c5bf]
-
   focus:border-[#006b73]
   focus:ring-[3px]
   focus:ring-[#006b73]/10

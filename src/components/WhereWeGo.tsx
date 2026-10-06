@@ -1,633 +1,612 @@
-import { useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  Map as MapLibreMap,
+  NavigationControl,
+  type MapLayerMouseEvent,
+} from "maplibre-gl";
+
+import "maplibre-gl/dist/maplibre-gl.css";
 
 type Destination = {
   id: string;
   name: string;
-  x: number;
-  y: number;
-  labelX: number;
-  labelY: number;
+  duration: string;
+  position: [number, number];
 };
 
-type Route = {
-  id: string;
-  destination: string;
-  duration: string;
-};
+const PUDUCHERRY: [number, number] = [79.8083, 11.9416];
 
 const destinations: Destination[] = [
   {
     id: "chennai",
     name: "Chennai",
-    x: 330,
-    y: 145,
-    labelX: 310,
-    labelY: 133,
+    duration: "~3 hrs",
+    position: [80.2707, 13.0827],
   },
   {
     id: "bangalore",
     name: "Bangalore",
-    x: 275,
-    y: 205,
-    labelX: 236,
-    labelY: 198,
+    duration: "~6 hrs",
+    position: [77.5946, 12.9716],
   },
   {
     id: "kerala",
     name: "Kerala",
-    x: 250,
-    y: 300,
-    labelX: 220,
-    labelY: 292,
+    duration: "~9 hrs",
+    position: [76.2711, 10.8505],
   },
   {
     id: "goa",
     name: "Goa",
-    x: 185,
-    y: 235,
-    labelX: 168,
-    labelY: 220,
+    duration: "~14 hrs",
+    position: [74.124, 15.2993],
   },
   {
     id: "hyderabad",
     name: "Hyderabad",
-    x: 300,
-    y: 95,
-    labelX: 270,
-    labelY: 82,
-  },
-];
-
-const routes: Route[] = [
-  {
-    id: "chennai",
-    destination: "Puducherry → Chennai",
-    duration: "~3 hrs",
-  },
-  {
-    id: "bangalore",
-    destination: "Puducherry → Bangalore",
-    duration: "~6 hrs",
-  },
-  {
-    id: "kerala",
-    destination: "Puducherry → Kerala",
-    duration: "~9 hrs",
-  },
-  {
-    id: "goa",
-    destination: "Puducherry → Goa",
-    duration: "~14 hrs",
-  },
-  {
-    id: "hyderabad",
-    destination: "Puducherry → Hyderabad",
     duration: "~12 hrs",
+    position: [78.4867, 17.385],
   },
 ];
 
 const WhereWeGo = () => {
+  const mapContainer = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<MapLibreMap | null>(null);
+
   const [activeRoute, setActiveRoute] = useState<string | null>(null);
 
-  const activeDestination = activeRoute
-    ? destinations.find(
-        (destination) => destination.id === activeRoute
-      )
-    : null;
+  useEffect(() => {
+    if (!mapContainer.current || mapRef.current) {
+      return;
+    }
+
+    const map = new MapLibreMap({
+      container: mapContainer.current,
+
+      /*
+       * Real OpenStreetMap raster tiles.
+       * No API key required.
+       */
+      style: {
+        version: 8,
+
+        sources: {
+          osm: {
+            type: "raster",
+            tiles: [
+              "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            ],
+            tileSize: 256,
+
+            attribution:
+              "&copy; OpenStreetMap contributors",
+          },
+        },
+
+        layers: [
+          {
+            id: "osm",
+            type: "raster",
+            source: "osm",
+
+            paint: {
+              "raster-opacity": 0.88,
+            },
+          },
+        ],
+      },
+
+      center: [78.2, 13.5],
+      zoom: 5.7,
+
+      minZoom: 5,
+      maxZoom: 9,
+
+      attributionControl: {
+        compact: true,
+      },
+
+      dragRotate: false,
+      pitchWithRotate: false,
+      touchPitch: false,
+    });
+
+    mapRef.current = map;
+
+    /*
+     * Zoom controls
+     */
+    map.addControl(
+      new NavigationControl({
+        showCompass: false,
+        showZoom: true,
+      }),
+      "bottom-right"
+    );
+
+    /*
+     * Prevent scroll wheel from taking over
+     * the whole page.
+     */
+    map.scrollZoom.disable();
+
+    map.on("load", () => {
+      /*
+       * =====================================================
+       * ROUTES
+       * =====================================================
+       */
+
+      const routeFeatures = destinations.map((destination) => ({
+        type: "Feature" as const,
+
+        properties: {
+          id: destination.id,
+          name: destination.name,
+        },
+
+        geometry: {
+          type: "LineString" as const,
+
+          coordinates: [
+            PUDUCHERRY,
+            destination.position,
+          ],
+        },
+      }));
+
+      map.addSource("karai-routes", {
+        type: "geojson",
+
+        data: {
+          type: "FeatureCollection",
+          features: routeFeatures,
+        },
+      });
+
+      /*
+       * Normal routes
+       */
+
+      map.addLayer({
+        id: "karai-route-lines",
+
+        type: "line",
+
+        source: "karai-routes",
+
+        layout: {
+          "line-cap": "round",
+          "line-join": "round",
+        },
+
+        paint: {
+          "line-color": "#008b91",
+          "line-width": 2.5,
+          "line-opacity": 0.7,
+          "line-dasharray": [2, 2],
+        },
+      });
+
+      /*
+       * Active route
+       */
+
+      map.addLayer({
+        id: "karai-active-route",
+
+        type: "line",
+
+        source: "karai-routes",
+
+        filter: [
+          "==",
+          ["get", "id"],
+          "",
+        ],
+
+        layout: {
+          "line-cap": "round",
+          "line-join": "round",
+        },
+
+        paint: {
+          "line-color": "#00a6ad",
+          "line-width": 4,
+          "line-opacity": 1,
+        },
+      });
+
+      /*
+       * =====================================================
+       * DESTINATION POINTS
+       * =====================================================
+       */
+
+      map.addSource("karai-destinations", {
+        type: "geojson",
+
+        data: {
+          type: "FeatureCollection",
+
+          features: destinations.map((destination) => ({
+            type: "Feature" as const,
+
+            properties: {
+              id: destination.id,
+              name: destination.name,
+            },
+
+            geometry: {
+              type: "Point" as const,
+
+              coordinates: destination.position,
+            },
+          })),
+        },
+      });
+
+      /*
+       * Outer destination circles
+       */
+
+      map.addLayer({
+        id: "destination-halo",
+
+        type: "circle",
+
+        source: "karai-destinations",
+
+        paint: {
+          "circle-radius": 9,
+
+          "circle-color": "#ffffff",
+
+          "circle-opacity": 0.95,
+
+          "circle-stroke-width": 2,
+
+          "circle-stroke-color": "#008b91",
+        },
+      });
+
+      /*
+       * Destination dots
+       */
+
+      map.addLayer({
+        id: "destination-points",
+
+        type: "circle",
+
+        source: "karai-destinations",
+
+        paint: {
+          "circle-radius": 5,
+
+          "circle-color": "#008b91",
+
+          "circle-opacity": 1,
+
+          "circle-stroke-width": 1,
+
+          "circle-stroke-color": "#ffffff",
+        },
+      });
+
+      /*
+       * =====================================================
+       * PUDUCHERRY
+       * =====================================================
+       */
+
+      map.addSource("puducherry", {
+        type: "geojson",
+
+        data: {
+          type: "Feature",
+
+          properties: {
+            name: "Puducherry",
+          },
+
+          geometry: {
+            type: "Point",
+
+            coordinates: PUDUCHERRY,
+          },
+        },
+      });
+
+      /*
+       * Puducherry outer ring
+       */
+
+      map.addLayer({
+        id: "puducherry-ring",
+
+        type: "circle",
+
+        source: "puducherry",
+
+        paint: {
+          "circle-radius": 15,
+
+          "circle-color": "#ffffff",
+
+          "circle-opacity": 0.95,
+
+          "circle-stroke-width": 2,
+
+          "circle-stroke-color": "#007d83",
+        },
+      });
+
+      /*
+       * Puducherry center
+       */
+
+      map.addLayer({
+        id: "puducherry-point",
+
+        type: "circle",
+
+        source: "puducherry",
+
+        paint: {
+          "circle-radius": 7,
+
+          "circle-color": "#007d83",
+
+          "circle-stroke-width": 2,
+
+          "circle-stroke-color": "#ffffff",
+        },
+      });
+
+      /*
+       * =====================================================
+       * DESTINATION HOVER
+       * =====================================================
+       */
+
+      map.on(
+        "mouseenter",
+        "destination-points",
+        () => {
+          map.getCanvas().style.cursor = "pointer";
+        }
+      );
+
+      map.on(
+        "mouseleave",
+        "destination-points",
+        () => {
+          map.getCanvas().style.cursor = "";
+        }
+      );
+
+      map.on(
+        "mousemove",
+        "destination-points",
+        (event: MapLayerMouseEvent) => {
+          const feature = event.features?.[0];
+
+          if (!feature) {
+            return;
+          }
+
+          const id = feature.properties?.id;
+
+          if (id) {
+            setActiveRoute(String(id));
+          }
+        }
+      );
+
+      map.on(
+        "click",
+        "destination-points",
+        (event: MapLayerMouseEvent) => {
+          const feature = event.features?.[0];
+
+          if (!feature) {
+            return;
+          }
+
+          const id = feature.properties?.id;
+
+          if (id) {
+            setActiveRoute(String(id));
+          }
+        }
+      );
+    });
+
+    return () => {
+      map.remove();
+      mapRef.current = null;
+    };
+  }, []);
+
+  /*
+   * =====================================================
+   * ACTIVE ROUTE UPDATE
+   * =====================================================
+   */
+
+  useEffect(() => {
+    const map = mapRef.current;
+
+    if (!map) {
+      return;
+    }
+
+    if (!map.isStyleLoaded()) {
+      return;
+    }
+
+    if (!map.getLayer("karai-route-lines")) {
+      return;
+    }
+
+    /*
+     * Fade all routes when one is active.
+     */
+
+    map.setPaintProperty(
+      "karai-route-lines",
+      "line-opacity",
+      activeRoute ? 0.18 : 0.7
+    );
+
+    /*
+     * Highlight selected route.
+     */
+
+    if (map.getLayer("karai-active-route")) {
+      map.setFilter(
+        "karai-active-route",
+        [
+          "==",
+          ["get", "id"],
+          activeRoute ?? "",
+        ]
+      );
+    }
+  }, [activeRoute]);
 
   return (
     <section
-      id="destinations"
-      className="
-        w-full
-        overflow-hidden
-        bg-[#f7f5f1]
-        text-[#111518]
-      "
+      id="where-we-go"
+      className="w-full overflow-hidden bg-[#f7f5f1] text-[#111518]"
     >
-      <div
-        className="
-          mx-auto
-          w-full
-          max-w-[1240px]
-          px-5
-          py-[52px]
-          sm:px-6
-          sm:py-[58px]
-          lg:px-0
-          lg:py-[54px]
-          xl:py-[54px]
-        "
-      >
-        <div
-          className="
-            grid
-            grid-cols-1
-            items-start
-            gap-[42px]
-            lg:grid-cols-[0.82fr_1.18fr]
-            lg:gap-[68px]
-          "
-        >
-          {/* =====================================================
-              LEFT CONTENT
-          ====================================================== */}
-          <div
-            className="
-              flex
-              min-w-0
-              flex-col
-            "
-          >
-            {/* Eyebrow */}
-            <p
-              className="
-                m-0
-                text-[11px]
-                font-medium
-                uppercase
-                tracking-[0.29em]
-                text-[#006b73]
-                sm:text-[12px]
-                sm:tracking-[0.30em]
-              "
-            >
-              REACH
-            </p>
+      <div className="mx-auto w-full max-w-[1240px] px-5 py-[56px] sm:px-6 sm:py-[64px] lg:px-0 lg:py-[68px]">
 
-            {/* Heading */}
-            <h2
-              className="
-                m-0
-                mt-[18px]
-                max-w-[530px]
-                text-[42px]
-                font-medium
-                leading-[1.04]
-                tracking-[-0.045em]
-                text-[#111518]
-                sm:mt-[20px]
-                sm:text-[50px]
-                md:text-[54px]
-                lg:text-[56px]
-              "
-            >
-              Go beyond the map.
-            </h2>
+        <div className="grid grid-cols-1 items-stretch gap-[36px] lg:grid-cols-[0.95fr_1.05fr] lg:gap-[52px]">
 
-            {/* Description */}
-            <p
-              className="
-                m-0
-                mt-[20px]
-                max-w-[505px]
-                text-[16px]
-                font-normal
-                leading-[1.65]
-                tracking-[-0.01em]
-                text-[#4d6478]
-                sm:text-[17px]
-                lg:text-[18px]
-                lg:leading-[1.55]
-              "
-            >
-              From Puducherry, the whole of South India opens up.
-              Hover a destination to see the route — and wherever
-              else you're headed, we'll plan it with you.
-            </p>
+          {/* =================================================
+              LEFT
+          ================================================= */}
 
-            {/* =================================================
-                ROUTES
-            ================================================== */}
-            <div
-              className="
-                mt-[34px]
-                w-full
-                max-w-[505px]
-                sm:mt-[38px]
-              "
-            >
-              {routes.map((route) => {
-                const isActive = activeRoute === route.id;
+          <div className="flex min-h-[520px] flex-col justify-between lg:min-h-[540px]">
 
-                return (
-                  <button
-                    key={route.id}
-                    type="button"
-                    onMouseEnter={() =>
-                      setActiveRoute(route.id)
-                    }
-                    onMouseLeave={() =>
-                      setActiveRoute(null)
-                    }
-                    onFocus={() =>
-                      setActiveRoute(route.id)
-                    }
-                    onBlur={() =>
-                      setActiveRoute(null)
-                    }
-                    className={`
-                      group
-                      flex
-                      min-h-[62px]
-                      w-full
-                      items-center
-                      justify-between
-                      gap-4
-                      border-b
-                      border-[#e2ded8]
-                      bg-transparent
-                      px-0
-                      text-left
-                      transition-all
-                      duration-300
-                      ease-out
-                      focus:outline-none
-                      ${
-                        isActive
-                          ? "translate-x-[3px]"
-                          : "translate-x-0"
-                      }
-                    `}
-                  >
-                    <div
-                      className="
-                        flex
-                        min-w-0
-                        items-center
-                        gap-[14px]
-                      "
-                    >
-                      {/* Dot */}
-                      <span
-                        className={`
-                          h-[6px]
-                          w-[6px]
-                          shrink-0
-                          rounded-full
-                          transition-all
-                          duration-300
-                          ${
-                            isActive
-                              ? "scale-[1.35] bg-[#006b73]"
-                              : "bg-[#c2c6c6]"
-                          }
-                        `}
-                      />
+            <div>
+              <p className="mb-4 text-[11px] font-semibold tracking-[0.24em] text-[#087f83]">
+                REACH
+              </p>
 
-                      {/* Destination */}
-                      <span
-                        className={`
-                          truncate
-                          text-[16px]
-                          font-medium
-                          tracking-[-0.015em]
-                          transition-colors
-                          duration-300
-                          sm:text-[17px]
-                          ${
-                            isActive
-                              ? "text-[#006b73]"
-                              : "text-[#111518]"
-                          }
-                        `}
-                      >
-                        {route.destination}
-                      </span>
-                    </div>
+              <h2 className="max-w-[560px] text-[40px] font-semibold leading-[1.05] tracking-[-0.04em] sm:text-[46px] lg:text-[50px]">
+                Go beyond the map.
+              </h2>
 
-                    {/* Duration */}
-                    <span
-                      className={`
-                        shrink-0
-                        text-[13px]
-                        font-normal
-                        transition-colors
-                        duration-300
-                        sm:text-[14px]
-                        ${
-                          isActive
-                            ? "text-[#006b73]"
-                            : "text-[#5c6770]"
-                        }
-                      `}
-                    >
-                      {route.duration}
-                    </span>
-                  </button>
-                );
-              })}
+              <p className="mt-6 max-w-[570px] text-[15px] leading-7 text-[#667075]">
+                From Puducherry, the whole of South India opens up. Hover a
+                destination to see the route — and wherever else you're headed,
+                we'll plan it with you.
+              </p>
             </div>
 
-            {/* Bottom text */}
-            <p
-              className="
-                m-0
-                mt-[25px]
-                text-[14px]
-                italic
-                leading-[1.5]
-                text-[#5b7181]
-                sm:text-[15px]
-              "
-            >
-              And wherever else you're headed.
-            </p>
+            {/* ROUTES */}
 
-            {/* CTA */}
-            <button
-              type="button"
-              className="
-                group
-                mt-[21px]
-                flex
-                h-[48px]
-                w-fit
-                items-center
-                justify-center
-                gap-[9px]
-                rounded-[8px]
-                border
-                border-[#006f77]
-                bg-[#006f77]
-                px-[24px]
-                text-[14px]
-                font-semibold
-                text-white
-                transition-all
-                duration-300
-                ease-out
-                hover:-translate-y-[2px]
-                hover:border-[#00828b]
-                hover:bg-[#00828b]
-                hover:shadow-[0_9px_24px_rgba(0,111,119,0.20)]
-                active:translate-y-0
-                focus:outline-none
-                focus:ring-2
-                focus:ring-[#006f77]/30
-              "
-            >
-              <span>Plan an Outstation Trip</span>
+            <div className="mt-10">
 
-              <ArrowUpRight
-                size={17}
-                strokeWidth={1.7}
-                className="
-                  transition-transform
-                  duration-300
-                  group-hover:translate-x-[3px]
-                  group-hover:-translate-y-[2px]
-                "
-                aria-hidden="true"
-              />
-            </button>
-          </div>
+              {destinations.map((destination) => (
+                <button
+                  key={destination.id}
+                  type="button"
+                  onMouseEnter={() =>
+                    setActiveRoute(destination.id)
+                  }
+                  onMouseLeave={() =>
+                    setActiveRoute(null)
+                  }
+                  onClick={() =>
+                    setActiveRoute(destination.id)
+                  }
+                  className={`group flex w-full items-center justify-between border-b border-[#ddd9d2] py-[15px] text-left transition-all duration-300 ${
+                    activeRoute === destination.id
+                      ? "px-3"
+                      : "px-0"
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
 
-          {/* =====================================================
-              MAP CARD
-          ====================================================== */}
-          <div
-            className="
-              relative
-              flex
-              h-[390px]
-              w-full
-              items-center
-              justify-center
-              overflow-hidden
-              rounded-[16px]
-              border
-              border-[#e6e1da]
-              bg-[#fffefd]
-              shadow-[0_1px_2px_rgba(0,0,0,0.02)]
-              sm:h-[470px]
-              lg:h-[550px]
-            "
-          >
-            <svg
-              viewBox="0 0 520 430"
-              className="
-                h-[88%]
-                w-[88%]
-                max-w-[610px]
-                overflow-visible
-                sm:h-[90%]
-                sm:w-[90%]
-              "
-              role="img"
-              aria-label="Puducherry travel destinations map"
-            >
-              {/* =================================================
-                  MAP AREA
-              ================================================== */}
-              <path
-                d="
-                  M 130 65
-                  C 190 28, 315 35, 375 80
-                  C 425 118, 438 200, 424 265
-                  C 407 344, 337 391, 257 395
-                  C 176 397, 104 357, 79 292
-                  C 54 226, 61 108, 130 65
-                  Z
-                "
-                fill="#f0ece4"
-                stroke="#ded7cc"
-                strokeWidth="1.5"
-              />
-
-              {/* =================================================
-                  ROUTE LINES
-              ================================================== */}
-              {destinations.map((destination) => {
-                const isActive =
-                  activeRoute === destination.id;
-
-                const isAnyActive = activeRoute !== null;
-
-                return (
-                  <line
-                    key={`route-${destination.id}`}
-                    x1="365"
-                    y1="274"
-                    x2={destination.x}
-                    y2={destination.y}
-                    stroke={
-                      isActive
-                        ? "#006b73"
-                        : "#aeb4b5"
-                    }
-                    strokeWidth={
-                      isActive ? 2.2 : 1.6
-                    }
-                    strokeDasharray={
-                      isActive ? "7 7" : "7 8"
-                    }
-                    opacity={
-                      !isAnyActive
-                        ? 0.8
-                        : isActive
-                          ? 1
-                          : 0.45
-                    }
-                    className="
-                      transition-all
-                      duration-300
-                    "
-                  />
-                );
-              })}
-
-              {/* =================================================
-                  DESTINATION POINTS
-              ================================================== */}
-              {destinations.map((destination) => {
-                const isActive =
-                  activeRoute === destination.id;
-
-                return (
-                  <g
-                    key={destination.id}
-                    className="
-                      cursor-pointer
-                    "
-                    onMouseEnter={() =>
-                      setActiveRoute(destination.id)
-                    }
-                  >
-                    {/* Glow */}
-                    <circle
-                      cx={destination.x}
-                      cy={destination.y}
-                      r={isActive ? 11 : 0}
-                      fill="none"
-                      stroke="#006b73"
-                      strokeWidth="1.5"
-                      opacity="0.25"
-                      className="
-                        transition-all
-                        duration-300
-                      "
+                    <span
+                      className={`h-[7px] w-[7px] rounded-full transition-all duration-300 ${
+                        activeRoute === destination.id
+                          ? "scale-125 bg-[#00a6ad]"
+                          : "bg-[#087f83]"
+                      }`}
                     />
 
-                    {/* Point */}
-                    <circle
-                      cx={destination.x}
-                      cy={destination.y}
-                      r={isActive ? 6 : 4.5}
-                      fill={
-                        isActive
-                          ? "#006b73"
-                          : "#075d65"
-                      }
-                      className="
-                        transition-all
-                        duration-300
-                      "
-                    />
-
-                    {/* Label */}
-                    <text
-                      x={destination.labelX}
-                      y={destination.labelY}
-                      textAnchor={
-                        destination.id === "goa" ||
-                        destination.id === "kerala"
-                          ? "end"
-                          : "start"
-                      }
-                      fill={
-                        isActive
-                          ? "#006b73"
-                          : "#77746f"
-                      }
-                      fontSize="13"
-                      fontWeight={
-                        isActive ? 600 : 400
-                      }
-                      className="
-                        select-none
-                        transition-all
-                        duration-300
-                      "
+                    <span
+                      className={`text-[14px] font-medium transition-colors ${
+                        activeRoute === destination.id
+                          ? "text-[#087f83]"
+                          : "text-[#22282b]"
+                      }`}
                     >
-                      {destination.name}
-                    </text>
-                  </g>
-                );
-              })}
+                      Puducherry → {destination.name}
+                    </span>
 
-              {/* =================================================
-                  PUDUCHERRY ORIGIN
-              ================================================== */}
+                  </span>
 
-              {/* Outer ring */}
-              <circle
-                cx="365"
-                cy="274"
-                r="17"
-                fill="none"
-                stroke="#c7c7c3"
-                strokeWidth="1.2"
-              />
+                  <span className="text-[12px] text-[#8a9093]">
+                    {destination.duration}
+                  </span>
+                </button>
+              ))}
 
-              {/* Inner ring */}
-              <circle
-                cx="365"
-                cy="274"
-                r="11"
-                fill="#075d65"
-              />
+              <p className="mt-6 font-serif text-[17px] italic text-[#70777b]">
+                And wherever else you're headed.
+              </p>
 
-              {/* White center */}
-              <circle
-                cx="365"
-                cy="274"
-                r="5"
-                fill="#f8f8f5"
-              />
-
-              {/* Puducherry label */}
-              <text
-                x="385"
-                y="279"
-                fill="#006b73"
-                fontSize="14"
-                fontWeight="600"
+              <button
+                type="button"
+                className="mt-7 inline-flex items-center gap-3 rounded-full bg-[#087f83] px-6 py-3 text-[13px] font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#066b6f] hover:shadow-[0_10px_25px_rgba(8,127,131,0.18)]"
               >
-                Puducherry
-              </text>
-            </svg>
-
-            {/* =================================================
-                ACTIVE DESTINATION INDICATOR
-            ================================================== */}
-            {activeDestination && (
-              <div
-                className="
-                  pointer-events-none
-                  absolute
-                  bottom-[18px]
-                  left-1/2
-                  -translate-x-1/2
-                  rounded-full
-                  border
-                  border-[#dcd8d0]
-                  bg-white/90
-                  px-3
-                  py-1
-                  text-[11px]
-                  font-medium
-                  text-[#006b73]
-                  shadow-sm
-                  backdrop-blur-sm
-                  sm:hidden
-                "
-              >
-                Puducherry → {activeDestination.name}
-              </div>
-            )}
+                Plan your journey
+                <span className="text-[17px]">
+                  →
+                </span>
+              </button>
+            </div>
           </div>
+
+          {/* =================================================
+              MAP
+          ================================================= */}
+
+          <div className="relative min-h-[520px] w-full lg:min-h-[540px]">
+
+            <div className="relative h-full min-h-[520px] w-full overflow-hidden rounded-[20px] border border-[#dedbd5] bg-[#e9e7e2] shadow-[0_10px_35px_rgba(17,21,24,0.07)] lg:min-h-[540px]">
+
+              <div
+                ref={mapContainer}
+                className="absolute inset-0"
+              />
+
+              {/* TOP BADGE */}
+
+              <div className="pointer-events-none absolute left-5 top-5 z-10">
+                <div className="rounded-full border border-white/80 bg-white/90 px-4 py-2 text-[10px] font-semibold tracking-[0.18em] text-[#087f83] shadow-sm backdrop-blur-md">
+                  SOUTH INDIA
+                </div>
+              </div>
+
+              {/* PUDUCHERRY BADGE */}
+
+              <div className="pointer-events-none absolute bottom-5 left-5 z-10">
+                <div className="rounded-full border border-white/80 bg-white/90 px-4 py-2 text-[11px] font-medium text-[#22282b] shadow-sm backdrop-blur-md">
+                  <span className="mr-2 inline-block h-[6px] w-[6px] rounded-full bg-[#087f83]" />
+                  Puducherry
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
