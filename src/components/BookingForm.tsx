@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import type {
   ChangeEvent,
   FormEvent,
@@ -98,10 +99,7 @@ const BookingForm = () => {
 
     const hours = Number(hoursString);
 
-    if (
-      Number.isNaN(hours) ||
-      !minutes
-    ) {
+    if (Number.isNaN(hours) || !minutes) {
       return time;
     }
 
@@ -144,42 +142,47 @@ const BookingForm = () => {
      * =======================================================
      * PREMIUM WHATSAPP BOOKING MESSAGE
      * =======================================================
+     *
+     * No emojis are used here because they were rendering
+     * incorrectly as � on WhatsApp.
+     *
+     * WhatsApp supports *bold* text formatting.
      */
 
     const message = `
-Hello Karai Travels! 👋
+Hello Karai Travels!
 
 I would like to request a ride.
 
 ━━━━━━━━━━━━━━━━━━
-🚕 BOOKING DETAILS
+*BOOKING DETAILS*
 ━━━━━━━━━━━━━━━━━━
 
-👤 Name: ${formData.name}
+*Name:* ${formData.name}
 
-📱 Phone / WhatsApp: ${formData.phone}
+*Phone / WhatsApp:* ${formData.phone}
 
-📍 Pickup: ${formData.pickupLocation}
+*Pickup:* ${formData.pickupLocation}
 
-📍 Drop: ${formData.dropLocation}
+*Drop:* ${formData.dropLocation}
 
-📅 Journey Date: ${formatDate(formData.journeyDate)}
+*Journey Date:* ${formatDate(formData.journeyDate)}
 
-🔄 Trip Type: ${formData.tripType}
+*Trip Type:* ${formData.tripType}
 
-👥 Passengers: ${formData.passengers}
+*Passengers:* ${formData.passengers}
 
-⏰ Pickup Time: ${formatTime(formData.pickupTime)}
+*Pickup Time:* ${formatTime(formData.pickupTime)}
 
-📝 Additional Requirements:
-${formData.requirements || "Nothing"}
+*Additional Requirements:*
+${formData.requirements || "None"}
 
 ━━━━━━━━━━━━━━━━━━
 
 Please confirm the availability and fare.
 
 Thank you!
-Karai Travels
+${formData.name}
 `.trim();
 
     /*
@@ -282,9 +285,7 @@ Karai Travels
               lg:grid-cols-3
             "
           >
-            {/* =================================================
-                PICKUP LOCATION
-            ================================================== */}
+            {/* PICKUP LOCATION */}
 
             <FormField
               label="Pickup Location"
@@ -303,9 +304,7 @@ Karai Travels
               />
             </FormField>
 
-            {/* =================================================
-                DROP LOCATION
-            ================================================== */}
+            {/* DROP LOCATION */}
 
             <FormField
               label="Drop Location"
@@ -324,9 +323,7 @@ Karai Travels
               />
             </FormField>
 
-            {/* =================================================
-                JOURNEY DATE
-            ================================================== */}
+            {/* JOURNEY DATE */}
 
             <FormField
               label="Journey Date"
@@ -344,9 +341,7 @@ Karai Travels
               />
             </FormField>
 
-            {/* =================================================
-                TRIP TYPE
-            ================================================== */}
+            {/* TRIP TYPE */}
 
             <FormField
               label="Trip Type"
@@ -378,9 +373,7 @@ Karai Travels
               </div>
             </FormField>
 
-            {/* =================================================
-                PASSENGERS
-            ================================================== */}
+            {/* PASSENGERS */}
 
             <FormField
               label="Passengers"
@@ -400,9 +393,7 @@ Karai Travels
               />
             </FormField>
 
-            {/* =================================================
-                PICKUP TIME
-            ================================================== */}
+            {/* PICKUP TIME */}
 
             <FormField
               label="Preferred Pickup Time"
@@ -418,9 +409,7 @@ Karai Travels
               />
             </FormField>
 
-            {/* =================================================
-                PHONE
-            ================================================== */}
+            {/* PHONE */}
 
             <FormField
               label="WhatsApp / Phone Number"
@@ -439,9 +428,7 @@ Karai Travels
               />
             </FormField>
 
-            {/* =================================================
-                NAME
-            ================================================== */}
+            {/* NAME */}
 
             <FormField
               label="Your Name"
@@ -460,15 +447,11 @@ Karai Travels
               />
             </FormField>
 
-            {/* =================================================
-                EMPTY GRID SPACE ON DESKTOP
-            ================================================== */}
+            {/* DESKTOP EMPTY SPACE */}
 
             <div className="hidden lg:block" />
 
-            {/* =================================================
-                ADDITIONAL REQUIREMENTS
-            ================================================== */}
+            {/* ADDITIONAL REQUIREMENTS */}
 
             <div className="md:col-span-2 lg:col-span-3">
               <label
@@ -513,9 +496,7 @@ Karai Travels
               sm:items-center
             "
           >
-            {/* =================================================
-                SUBMIT
-            ================================================== */}
+            {/* SUBMIT BUTTON */}
 
             <button
               type="submit"
@@ -584,9 +565,7 @@ Karai Travels
               )}
             </button>
 
-            {/* =================================================
-                INFORMATION
-            ================================================== */}
+            {/* INFORMATION */}
 
             <div
               className="
