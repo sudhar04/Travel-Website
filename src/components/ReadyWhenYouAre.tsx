@@ -1,4 +1,5 @@
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 
 const ReadyWhenYouAre = () => {
   const handlePlanRide = () => {
@@ -215,6 +216,7 @@ const ReadyWhenYouAre = () => {
             </button>
 
             {/* WhatsApp */}
+            
             <button
               type="button"
               onClick={handleWhatsApp}
@@ -250,9 +252,8 @@ const ReadyWhenYouAre = () => {
                 focus:ring-offset-[#101415]
               "
             >
-              <MessageCircle
+              <FaWhatsapp
                 size={21}
-                strokeWidth={1.7}
                 className="
                   transition-transform
                   duration-300

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { FaWhatsapp } from "react-icons/fa";
 import ScrollReveal from "scrollreveal";
 
 import heroImage from "../assets/hero-road1.png";
@@ -365,59 +366,44 @@ const Hero: React.FC = () => {
             {/* WHATSAPP */}
 
             <button
-              type="button"
-              onClick={handleWhatsApp}
+            type="button"
+            onClick={handleWhatsApp}
+            className="
+              flex
+              h-[52px]
+              w-full
+              items-center
+              justify-center
+              gap-2
+              rounded-[8px]
+              border
+              border-white/25
+              bg-black/10
+              px-7
+              text-[16px]
+              font-semibold
+              text-white
+              backdrop-blur-[3px]
+              transition-all
+              duration-300
+              hover:border-white/45
+              hover:bg-white/10
+              sm:w-auto
+            "
+          >
+            {/* WhatsApp icon */}
+            <FaWhatsapp
+              size={20}
               className="
-                flex
-                h-[52px]
-                w-full
-                items-center
-                justify-center
-                gap-2
-                rounded-[8px]
-                border
-                border-white/25
-                bg-black/10
-                px-7
-                text-[16px]
-                font-semibold
-                text-white
-                backdrop-blur-[3px]
-                transition-all
+                transition-transform
                 duration-300
-                hover:border-white/45
-                hover:bg-white/10
-                sm:w-auto
+                group-hover:scale-110
               "
-            >
+              aria-hidden="true"
+            />
 
-              {/* WhatsApp icon */}
-
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M20.5 11.5C20.5 16.194 16.694 20 12 20C10.52 20 9.13 19.62 7.93 18.95L4 20L5.05 16.07C4.38 14.87 4 13.48 4 12C4 7.306 7.806 3.5 12.5 3.5C17.194 3.5 21 7.306 21 12"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-
-                <path
-                  d="M8.5 9.5C8.8 11.8 10.5 13.9 13 14.7"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                />
-              </svg>
-
-              <span>WhatsApp Us</span>
-            </button>
+            <span>WhatsApp Us</span>
+          </button>
 
           </div>
 

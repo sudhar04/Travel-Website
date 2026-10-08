@@ -530,6 +530,16 @@ const WhereWeGo = () => {
 
               <button
                 type="button"
+                onClick={() => {
+                const bookingSection = document.getElementById("booking");
+
+                if (bookingSection) {
+                  bookingSection.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+                }
+              }}
                 className="mt-7 inline-flex items-center gap-4 rounded-full bg-[#078d96] px-7 py-3.5 text-[14px] font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#067b83] hover:shadow-[0_10px_25px_rgba(7,141,150,0.18)]"
               >
                 Plan your journey

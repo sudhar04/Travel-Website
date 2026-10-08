@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { FaWhatsapp } from "react-icons/fa";
 
 interface FooterLink {
   label: string;
@@ -49,7 +50,7 @@ const Footer = () => {
     },
     {
       label: "Destinations",
-      href: "#destinations",
+      href: "#where-we-go",
     },
     {
       label: "Why Us",
@@ -207,7 +208,15 @@ const Footer = () => {
                 active:translate-y-0
               "
             >
-              <ChatIcon />
+              <FaWhatsapp
+                size={20}
+                className="
+                  transition-transform
+                  duration-300
+                  group-hover:scale-110
+                "
+                aria-hidden="true"
+              />
 
               <span>WhatsApp Us</span>
             </button>
@@ -500,32 +509,7 @@ const ContactItem = ({
    ICONS
 ============================================================= */
 
-const ChatIcon = () => {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M20.5 11.5C20.5 16.194 16.694 20 12 20C10.52 20 9.13 19.62 7.93 18.95L4 20L5.05 16.07C4.38 14.87 4 13.48 4 12C4 7.306 7.806 3.5 12.5 3.5C17.194 3.5 21 7.306 21 12"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
 
-      <path
-        d="M8.5 9.5C8.8 11.8 10.5 13.9 13 14.7"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-};
 
 const PhoneIcon = () => {
   return (

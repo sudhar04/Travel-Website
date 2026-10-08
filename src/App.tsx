@@ -1,5 +1,5 @@
-import Navbar from '../src/components/Navbar'
-import Hero from '../src/components/Hero'
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
 import BookingForm from "./components/BookingForm";
 import WhatWeOffer from "./components/WhatWeOffer";
 import WhereWeGo from "./components/WhereWeGo";
@@ -15,8 +15,6 @@ import ReadyWhenYouAre from "./components/ReadyWhenYouAre";
 import Footer from "./components/Footer";
 
 function App() {
-  
-
   return (
     <>
       <Navbar />
@@ -35,7 +33,7 @@ function App() {
       <ReadyWhenYouAre />
       <Footer />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

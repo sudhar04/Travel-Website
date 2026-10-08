@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaWhatsapp } from "react-icons/fa";
 
 interface NavItem {
   label: string;
@@ -50,8 +51,19 @@ const Navbar = () => {
     };
   }, []);
 
-  const handleNavClick = () => {
+  // Smooth scroll without changing the URL
+  const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
+
+    const sectionId = href.replace("#", "");
+    const section = document.getElementById(sectionId);
+
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
   };
 
   const handleWhatsApp = () => {
@@ -84,9 +96,13 @@ const Navbar = () => {
         {/* =====================================================
             LOGO
         ====================================================== */}
+
         <a
           href="#home"
-          onClick={handleNavClick}
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavClick("#home");
+          }}
           className="group flex shrink-0 items-center gap-3"
           aria-label="Karai Travels Home"
         >
@@ -124,12 +140,17 @@ const Navbar = () => {
         {/* =====================================================
             DESKTOP NAVIGATION
         ====================================================== */}
+
         <div className="hidden items-center lg:flex">
           <div className="flex items-center gap-[30px]">
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(item.href);
+                }}
                 className={`
                   relative py-2
                   text-[15px] font-medium
@@ -160,6 +181,7 @@ const Navbar = () => {
         {/* =====================================================
             DESKTOP ACTIONS
         ====================================================== */}
+
         <div className="hidden items-center gap-5 lg:flex">
           {/* WhatsApp */}
           <button
@@ -176,44 +198,11 @@ const Navbar = () => {
               }
             `}
           >
-            {/* WhatsApp/chat icon */}
-            <svg
-              width="19"
-              height="19"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
+            <FaWhatsapp
+              size={20}
               className="transition-transform duration-300 group-hover:scale-110"
-            >
-              <path
-                d="M20 11.5C20 16.194 16.194 20 11.5 20C10.02 20 8.63 19.62 7.43 18.95L4 20L5.05 16.57C4.38 15.37 4 13.98 4 12.5C4 7.806 7.806 4 12.5 4C17.194 4 21 7.806 21 12.5"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-
-              <path
-                d="M8.5 9.5C8.5 12.3 11.2 15 14 15"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-              />
-
-              <path
-                d="M8.5 9.5C8.5 9.5 9 8.5 9.5 8.5C10 8.5 10.7 9.5 10.9 10C11.1 10.5 10.5 11 10.2 11.3"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-
-              <path
-                d="M14 15C14 15 15 14.5 15.5 14.2C16 13.9 17 14.6 17.2 15C17.4 15.4 17 16 16.5 16.2"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
+              aria-hidden="true"
+            />
 
             <span>WhatsApp Us</span>
           </button>
@@ -221,6 +210,10 @@ const Navbar = () => {
           {/* Book a Ride */}
           <a
             href="#booking"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick("#booking");
+            }}
             className="
               group flex h-[48px]
               items-center justify-center
@@ -243,6 +236,7 @@ const Navbar = () => {
         {/* =====================================================
             MOBILE MENU BUTTON
         ====================================================== */}
+
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen((prev) => !prev)}
@@ -280,6 +274,7 @@ const Navbar = () => {
                 strokeWidth="2"
                 strokeLinecap="round"
               />
+
               <path
                 d="M18 6L6 18"
                 stroke="currentColor"
@@ -302,12 +297,14 @@ const Navbar = () => {
                 strokeWidth="2"
                 strokeLinecap="round"
               />
+
               <path
                 d="M4 12H20"
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
               />
+
               <path
                 d="M4 17H20"
                 stroke="currentColor"
@@ -322,6 +319,7 @@ const Navbar = () => {
       {/* =====================================================
           MOBILE MENU
       ====================================================== */}
+
       <div
         className={`
           overflow-hidden
@@ -343,7 +341,10 @@ const Navbar = () => {
               <a
                 key={item.label}
                 href={item.href}
-                onClick={handleNavClick}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(item.href);
+                }}
                 className={`
                   flex min-h-[50px]
                   items-center
@@ -387,29 +388,21 @@ const Navbar = () => {
                 hover:text-white
               "
             >
-              <svg
-                width="19"
-                height="19"
-                viewBox="0 0 24 24"
-                fill="none"
+              <FaWhatsapp
+                size={20}
                 aria-hidden="true"
-              >
-                <path
-                  d="M20 11.5C20 16.194 16.194 20 11.5 20C10.02 20 8.63 19.62 7.43 18.95L4 20L5.05 16.57C4.38 15.37 4 13.98 4 12.5C4 7.806 7.806 4 12.5 4C17.194 4 21 7.806 21 12.5"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              />
 
               WhatsApp Us
             </button>
 
             {/* Book Ride */}
             <a
-              href="#contact"
-              onClick={handleNavClick}
+              href="#booking"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick("#booking");
+              }}
               className="
                 flex h-[50px]
                 w-full
