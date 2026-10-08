@@ -206,7 +206,7 @@ ${formData.name}
 
   return (
     <section
-      id="book-a-ride"
+      id="booking"
       className="
         relative
         z-20

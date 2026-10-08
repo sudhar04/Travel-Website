@@ -1,11 +1,26 @@
 import { useEffect, useRef, useState } from "react";
+
 import {
   Map as MapLibreMap,
   NavigationControl,
-  type MapLayerMouseEvent,
+  AttributionControl,
+  setWorkerUrl,
+  type Map as MapInstance,
 } from "maplibre-gl";
 
+import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
+
 import "maplibre-gl/dist/maplibre-gl.css";
+
+// ------------------------------------------------------
+// MapLibre Vite worker setup
+// ------------------------------------------------------
+
+setWorkerUrl(workerUrl);
+
+// ------------------------------------------------------
+// Types
+// ------------------------------------------------------
 
 type Destination = {
   id: string;
@@ -13,6 +28,10 @@ type Destination = {
   duration: string;
   position: [number, number];
 };
+
+// ------------------------------------------------------
+// Locations
+// ------------------------------------------------------
 
 const PUDUCHERRY: [number, number] = [79.8083, 11.9416];
 
@@ -49,11 +68,20 @@ const destinations: Destination[] = [
   },
 ];
 
+// ------------------------------------------------------
+// Component
+// ------------------------------------------------------
+
 const WhereWeGo = () => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<MapLibreMap | null>(null);
+
+  const mapRef = useRef<MapInstance | null>(null);
 
   const [activeRoute, setActiveRoute] = useState<string | null>(null);
+
+  // ----------------------------------------------------
+  // Initialize map
+  // ----------------------------------------------------
 
   useEffect(() => {
     if (!mapContainer.current || mapRef.current) {
@@ -63,59 +91,33 @@ const WhereWeGo = () => {
     const map = new MapLibreMap({
       container: mapContainer.current,
 
-      /*
-       * Real OpenStreetMap raster tiles.
-       * No API key required.
-       */
-      style: {
-        version: 8,
-
-        sources: {
-          osm: {
-            type: "raster",
-            tiles: [
-              "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-            ],
-            tileSize: 256,
-
-            attribution:
-              "&copy; OpenStreetMap contributors",
-          },
-        },
-
-        layers: [
-          {
-            id: "osm",
-            type: "raster",
-            source: "osm",
-
-            paint: {
-              "raster-opacity": 0.88,
-            },
-          },
-        ],
-      },
+      // Clean OpenFreeMap style
+      style: "https://tiles.openfreemap.org/styles/liberty",
 
       center: [78.2, 13.5],
-      zoom: 5.7,
+
+      zoom: 5.6,
 
       minZoom: 5,
+
       maxZoom: 9,
 
-      attributionControl: {
-        compact: true,
-      },
+      // We add attribution manually
+      attributionControl: false,
 
       dragRotate: false,
+
       pitchWithRotate: false,
+
       touchPitch: false,
     });
 
     mapRef.current = map;
 
-    /*
-     * Zoom controls
-     */
+    // --------------------------------------------------
+    // Controls
+    // --------------------------------------------------
+
     map.addControl(
       new NavigationControl({
         showCompass: false,
@@ -124,34 +126,36 @@ const WhereWeGo = () => {
       "bottom-right"
     );
 
-    /*
-     * Prevent scroll wheel from taking over
-     * the whole page.
-     */
+    map.addControl(
+      new AttributionControl({
+        compact: true,
+      }),
+      "bottom-right"
+    );
+
+    // Prevent page scrolling when mouse is over map
     map.scrollZoom.disable();
 
+    // --------------------------------------------------
+    // Map loaded
+    // --------------------------------------------------
+
     map.on("load", () => {
-      /*
-       * =====================================================
-       * ROUTES
-       * =====================================================
-       */
+      // ------------------------------------------------
+      // ROUTES
+      // ------------------------------------------------
 
       const routeFeatures = destinations.map((destination) => ({
         type: "Feature" as const,
 
         properties: {
           id: destination.id,
-          name: destination.name,
         },
 
         geometry: {
           type: "LineString" as const,
 
-          coordinates: [
-            PUDUCHERRY,
-            destination.position,
-          ],
+          coordinates: [PUDUCHERRY, destination.position],
         },
       }));
 
@@ -160,13 +164,14 @@ const WhereWeGo = () => {
 
         data: {
           type: "FeatureCollection",
+
           features: routeFeatures,
         },
       });
 
-      /*
-       * Normal routes
-       */
+      // ------------------------------------------------
+      // Normal route lines
+      // ------------------------------------------------
 
       map.addLayer({
         id: "karai-route-lines",
@@ -181,16 +186,19 @@ const WhereWeGo = () => {
         },
 
         paint: {
-          "line-color": "#008b91",
-          "line-width": 2.5,
-          "line-opacity": 0.7,
+          "line-color": "#0797a0",
+
+          "line-width": 2.2,
+
+          "line-opacity": 0.28,
+
           "line-dasharray": [2, 2],
         },
       });
 
-      /*
-       * Active route
-       */
+      // ------------------------------------------------
+      // Active highlighted route
+      // ------------------------------------------------
 
       map.addLayer({
         id: "karai-active-route",
@@ -199,11 +207,7 @@ const WhereWeGo = () => {
 
         source: "karai-routes",
 
-        filter: [
-          "==",
-          ["get", "id"],
-          "",
-        ],
+        filter: ["==", ["get", "id"], ""],
 
         layout: {
           "line-cap": "round",
@@ -211,17 +215,19 @@ const WhereWeGo = () => {
         },
 
         paint: {
-          "line-color": "#00a6ad",
+          "line-color": "#009fa8",
+
           "line-width": 4,
+
           "line-opacity": 1,
+
+          "line-dasharray": [1, 0],
         },
       });
 
-      /*
-       * =====================================================
-       * DESTINATION POINTS
-       * =====================================================
-       */
+      // ------------------------------------------------
+      // Destination points
+      // ------------------------------------------------
 
       map.addSource("karai-destinations", {
         type: "geojson",
@@ -234,6 +240,7 @@ const WhereWeGo = () => {
 
             properties: {
               id: destination.id,
+
               name: destination.name,
             },
 
@@ -246,10 +253,7 @@ const WhereWeGo = () => {
         },
       });
 
-      /*
-       * Outer destination circles
-       */
-
+      // Outer destination circle
       map.addLayer({
         id: "destination-halo",
 
@@ -258,22 +262,19 @@ const WhereWeGo = () => {
         source: "karai-destinations",
 
         paint: {
-          "circle-radius": 9,
+          "circle-radius": 8,
 
           "circle-color": "#ffffff",
 
           "circle-opacity": 0.95,
 
-          "circle-stroke-width": 2,
+          "circle-stroke-width": 1.5,
 
-          "circle-stroke-color": "#008b91",
+          "circle-stroke-color": "#0797a0",
         },
       });
 
-      /*
-       * Destination dots
-       */
-
+      // Destination dot
       map.addLayer({
         id: "destination-points",
 
@@ -282,23 +283,17 @@ const WhereWeGo = () => {
         source: "karai-destinations",
 
         paint: {
-          "circle-radius": 5,
+          "circle-radius": 4.5,
 
-          "circle-color": "#008b91",
+          "circle-color": "#0797a0",
 
           "circle-opacity": 1,
-
-          "circle-stroke-width": 1,
-
-          "circle-stroke-color": "#ffffff",
         },
       });
 
-      /*
-       * =====================================================
-       * PUDUCHERRY
-       * =====================================================
-       */
+      // ------------------------------------------------
+      // Puducherry source
+      // ------------------------------------------------
 
       map.addSource("puducherry", {
         type: "geojson",
@@ -306,9 +301,7 @@ const WhereWeGo = () => {
         data: {
           type: "Feature",
 
-          properties: {
-            name: "Puducherry",
-          },
+          properties: {},
 
           geometry: {
             type: "Point",
@@ -318,10 +311,7 @@ const WhereWeGo = () => {
         },
       });
 
-      /*
-       * Puducherry outer ring
-       */
-
+      // Puducherry outer ring
       map.addLayer({
         id: "puducherry-ring",
 
@@ -330,7 +320,7 @@ const WhereWeGo = () => {
         source: "puducherry",
 
         paint: {
-          "circle-radius": 15,
+          "circle-radius": 12,
 
           "circle-color": "#ffffff",
 
@@ -338,14 +328,11 @@ const WhereWeGo = () => {
 
           "circle-stroke-width": 2,
 
-          "circle-stroke-color": "#007d83",
+          "circle-stroke-color": "#0797a0",
         },
       });
 
-      /*
-       * Puducherry center
-       */
-
+      // Puducherry center
       map.addLayer({
         id: "puducherry-point",
 
@@ -354,9 +341,9 @@ const WhereWeGo = () => {
         source: "puducherry",
 
         paint: {
-          "circle-radius": 7,
+          "circle-radius": 6.5,
 
-          "circle-color": "#007d83",
+          "circle-color": "#0797a0",
 
           "circle-stroke-width": 2,
 
@@ -364,76 +351,33 @@ const WhereWeGo = () => {
         },
       });
 
-      /*
-       * =====================================================
-       * DESTINATION HOVER
-       * =====================================================
-       */
+      // ------------------------------------------------
+      // Map destination hover
+      // ------------------------------------------------
 
-      map.on(
-        "mouseenter",
-        "destination-points",
-        () => {
-          map.getCanvas().style.cursor = "pointer";
-        }
-      );
+      map.on("mouseenter", "destination-points", () => {
+        map.getCanvas().style.cursor = "pointer";
+      });
 
-      map.on(
-        "mouseleave",
-        "destination-points",
-        () => {
-          map.getCanvas().style.cursor = "";
-        }
-      );
-
-      map.on(
-        "mousemove",
-        "destination-points",
-        (event: MapLayerMouseEvent) => {
-          const feature = event.features?.[0];
-
-          if (!feature) {
-            return;
-          }
-
-          const id = feature.properties?.id;
-
-          if (id) {
-            setActiveRoute(String(id));
-          }
-        }
-      );
-
-      map.on(
-        "click",
-        "destination-points",
-        (event: MapLayerMouseEvent) => {
-          const feature = event.features?.[0];
-
-          if (!feature) {
-            return;
-          }
-
-          const id = feature.properties?.id;
-
-          if (id) {
-            setActiveRoute(String(id));
-          }
-        }
-      );
+      map.on("mouseleave", "destination-points", () => {
+        map.getCanvas().style.cursor = "";
+      });
     });
+
+    // --------------------------------------------------
+    // Cleanup
+    // --------------------------------------------------
 
     return () => {
       map.remove();
+
       mapRef.current = null;
     };
   }, []);
 
-  /*
-   * =====================================================
-   * ACTIVE ROUTE UPDATE
-   * =====================================================
-   */
+  // ----------------------------------------------------
+  // Update active route
+  // ----------------------------------------------------
 
   useEffect(() => {
     const map = mapRef.current;
@@ -450,163 +394,194 @@ const WhereWeGo = () => {
       return;
     }
 
-    /*
-     * Fade all routes when one is active.
-     */
+    if (!map.getLayer("karai-active-route")) {
+      return;
+    }
 
+    // Fade normal routes when one is active
     map.setPaintProperty(
       "karai-route-lines",
       "line-opacity",
-      activeRoute ? 0.18 : 0.7
+      activeRoute ? 0.08 : 0.28
     );
 
-    /*
-     * Highlight selected route.
-     */
-
-    if (map.getLayer("karai-active-route")) {
-      map.setFilter(
-        "karai-active-route",
-        [
-          "==",
-          ["get", "id"],
-          activeRoute ?? "",
-        ]
-      );
-    }
+    // Highlight selected route
+    map.setFilter("karai-active-route", [
+      "==",
+      ["get", "id"],
+      activeRoute ?? "",
+    ]);
   }, [activeRoute]);
+
+  // ----------------------------------------------------
+  // Handle left-side route hover
+  // ----------------------------------------------------
+
+  const handleRouteEnter = (id: string) => {
+    setActiveRoute(id);
+  };
+
+  const handleRouteLeave = () => {
+    setActiveRoute(null);
+  };
+
+  // ----------------------------------------------------
+  // Render
+  // ----------------------------------------------------
 
   return (
     <section
       id="where-we-go"
       className="w-full overflow-hidden bg-[#f7f5f1] text-[#111518]"
     >
-      <div className="mx-auto w-full max-w-[1240px] px-5 py-[56px] sm:px-6 sm:py-[64px] lg:px-0 lg:py-[68px]">
-
-        <div className="grid grid-cols-1 items-stretch gap-[36px] lg:grid-cols-[0.95fr_1.05fr] lg:gap-[52px]">
-
+      <div className="mx-auto w-full max-w-[1240px] px-5 py-[64px] sm:px-6 lg:px-0 lg:py-[72px]">
+        <div className="grid grid-cols-1 items-stretch gap-[36px] lg:grid-cols-[0.94fr_1.06fr] lg:gap-[50px]">
           {/* =================================================
-              LEFT
+              LEFT CONTENT
           ================================================= */}
 
-          <div className="flex min-h-[520px] flex-col justify-between lg:min-h-[540px]">
+          <div className="flex min-h-[520px] flex-col">
+            {/* Eyebrow */}
 
             <div>
-              <p className="mb-4 text-[11px] font-semibold tracking-[0.24em] text-[#087f83]">
-                REACH
+              <p className="mb-5 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#008c95]">
+                Reach
               </p>
 
-              <h2 className="max-w-[560px] text-[40px] font-semibold leading-[1.05] tracking-[-0.04em] sm:text-[46px] lg:text-[50px]">
+              {/* Heading */}
+
+              <h2 className="max-w-[620px] text-[44px] font-medium leading-[1.02] tracking-[-0.04em] text-[#111518] sm:text-[50px] lg:text-[54px]">
                 Go beyond the map.
               </h2>
 
-              <p className="mt-6 max-w-[570px] text-[15px] leading-7 text-[#667075]">
+              {/* Description */}
+
+              <p className="mt-7 max-w-[610px] text-[16px] leading-[1.65] text-[#60748a] sm:text-[17px]">
                 From Puducherry, the whole of South India opens up. Hover a
-                destination to see the route — and wherever else you're headed,
-                we'll plan it with you.
+                destination to see the route — and wherever else you're
+                headed, we'll plan it with you.
               </p>
-            </div>
 
-            {/* ROUTES */}
+              {/* Routes */}
 
-            <div className="mt-10">
+              <div className="mt-10">
+                {destinations.map((destination) => {
+                  const isActive = activeRoute === destination.id;
 
-              {destinations.map((destination) => (
-                <button
-                  key={destination.id}
-                  type="button"
-                  onMouseEnter={() =>
-                    setActiveRoute(destination.id)
-                  }
-                  onMouseLeave={() =>
-                    setActiveRoute(null)
-                  }
-                  onClick={() =>
-                    setActiveRoute(destination.id)
-                  }
-                  className={`group flex w-full items-center justify-between border-b border-[#ddd9d2] py-[15px] text-left transition-all duration-300 ${
-                    activeRoute === destination.id
-                      ? "px-3"
-                      : "px-0"
-                  }`}
-                >
-                  <span className="flex items-center gap-3">
-
-                    <span
-                      className={`h-[7px] w-[7px] rounded-full transition-all duration-300 ${
-                        activeRoute === destination.id
-                          ? "scale-125 bg-[#00a6ad]"
-                          : "bg-[#087f83]"
-                      }`}
-                    />
-
-                    <span
-                      className={`text-[14px] font-medium transition-colors ${
-                        activeRoute === destination.id
-                          ? "text-[#087f83]"
-                          : "text-[#22282b]"
+                  return (
+                    <button
+                      key={destination.id}
+                      type="button"
+                      onMouseEnter={() =>
+                        handleRouteEnter(destination.id)
+                      }
+                      onMouseLeave={handleRouteLeave}
+                      onFocus={() =>
+                        handleRouteEnter(destination.id)
+                      }
+                      onBlur={handleRouteLeave}
+                      className={`group flex w-full items-center justify-between border-b border-[#dedbd5] px-0 py-[17px] text-left transition-all duration-300 ${
+                        isActive
+                          ? "bg-[#e8f4f3] px-3"
+                          : "hover:bg-[#f0f5f4] hover:px-3"
                       }`}
                     >
-                      Puducherry → {destination.name}
-                    </span>
+                      <span className="flex items-center gap-3">
+                        <span
+                          className={`h-2 w-2 rounded-full transition-all duration-300 ${
+                            isActive
+                              ? "scale-125 bg-[#0797a0] shadow-[0_0_0_6px_rgba(7,151,160,0.12)]"
+                              : "bg-[#0797a0]"
+                          }`}
+                        />
 
-                  </span>
+                        <span
+                          className={`text-[15px] font-medium transition-colors duration-300 ${
+                            isActive
+                              ? "text-[#008b94]"
+                              : "text-[#182027]"
+                          }`}
+                        >
+                          Puducherry → {destination.name}
+                        </span>
+                      </span>
 
-                  <span className="text-[12px] text-[#8a9093]">
-                    {destination.duration}
-                  </span>
-                </button>
-              ))}
+                      <span
+                        className={`text-[13px] transition-colors duration-300 ${
+                          isActive
+                            ? "text-[#008b94]"
+                            : "text-[#788796]"
+                        }`}
+                      >
+                        {destination.duration}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-              <p className="mt-6 font-serif text-[17px] italic text-[#70777b]">
+            {/* Bottom */}
+
+            <div className="mt-auto pt-8">
+              <p className="font-serif text-[18px] italic text-[#65727d]">
                 And wherever else you're headed.
               </p>
 
               <button
                 type="button"
-                className="mt-7 inline-flex items-center gap-3 rounded-full bg-[#087f83] px-6 py-3 text-[13px] font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#066b6f] hover:shadow-[0_10px_25px_rgba(8,127,131,0.18)]"
+                className="mt-7 inline-flex items-center gap-4 rounded-full bg-[#078d96] px-7 py-3.5 text-[14px] font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#067b83] hover:shadow-[0_10px_25px_rgba(7,141,150,0.18)]"
               >
                 Plan your journey
-                <span className="text-[17px]">
-                  →
-                </span>
+                <span className="text-[18px]">→</span>
               </button>
             </div>
           </div>
 
           {/* =================================================
-              MAP
+              RIGHT MAP
           ================================================= */}
 
-          <div className="relative min-h-[520px] w-full lg:min-h-[540px]">
-
-            <div className="relative h-full min-h-[520px] w-full overflow-hidden rounded-[20px] border border-[#dedbd5] bg-[#e9e7e2] shadow-[0_10px_35px_rgba(17,21,24,0.07)] lg:min-h-[540px]">
+          <div className="relative min-h-[520px] w-full">
+            <div className="relative h-full min-h-[520px] w-full overflow-hidden rounded-[20px] border border-[#dedbd5] bg-[#e9e7e2] shadow-[0_12px_35px_rgba(17,21,24,0.06)]">
+              {/* Map */}
 
               <div
                 ref={mapContainer}
-                className="absolute inset-0"
+                className="absolute inset-0 h-full w-full"
               />
 
-              {/* TOP BADGE */}
+              {/* South India badge */}
 
-              <div className="pointer-events-none absolute left-5 top-5 z-10">
-                <div className="rounded-full border border-white/80 bg-white/90 px-4 py-2 text-[10px] font-semibold tracking-[0.18em] text-[#087f83] shadow-sm backdrop-blur-md">
-                  SOUTH INDIA
-                </div>
+              <div className="pointer-events-none absolute left-5 top-5 z-10 rounded-full border border-white/70 bg-white/95 px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#008b94] shadow-[0_4px_15px_rgba(0,0,0,0.08)] backdrop-blur">
+                South India
               </div>
 
-              {/* PUDUCHERRY BADGE */}
+              {/* Active route badge */}
 
-              <div className="pointer-events-none absolute bottom-5 left-5 z-10">
-                <div className="rounded-full border border-white/80 bg-white/90 px-4 py-2 text-[11px] font-medium text-[#22282b] shadow-sm backdrop-blur-md">
-                  <span className="mr-2 inline-block h-[6px] w-[6px] rounded-full bg-[#087f83]" />
-                  Puducherry
-                </div>
+              <div
+                className={`pointer-events-none absolute right-5 top-5 z-10 rounded-full border border-white/70 bg-white/95 px-5 py-3 text-[11px] font-semibold text-[#008b94] shadow-[0_4px_15px_rgba(0,0,0,0.08)] backdrop-blur transition-all duration-300 ${
+                  activeRoute
+                    ? "translate-y-0 opacity-100"
+                    : "-translate-y-2 opacity-0"
+                }`}
+              >
+                Puducherry →{" "}
+                {
+                  destinations.find(
+                    (destination) => destination.id === activeRoute
+                  )?.name
+                }
               </div>
 
+              {/* Puducherry badge */}
+
+              <div className="pointer-events-none absolute bottom-5 left-5 z-10 flex items-center gap-2 rounded-full border border-white/70 bg-white/95 px-4 py-2.5 text-[11px] font-medium text-[#243039] shadow-[0_4px_15px_rgba(0,0,0,0.08)] backdrop-blur">
+                <span className="h-2 w-2 rounded-full bg-[#0797a0]" />
+                Puducherry
+              </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>

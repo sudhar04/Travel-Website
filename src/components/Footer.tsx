@@ -10,7 +10,7 @@ interface FooterColumnProps {
   links: FooterLink[];
 }
 
-const WHATSAPP_NUMBER = "919876543210";
+const WHATSAPP_NUMBER = "919342832151";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();

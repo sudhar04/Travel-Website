@@ -3,7 +3,7 @@ import ScrollReveal from "scrollreveal";
 
 import heroImage from "../assets/hero-road1.png";
 
-const WHATSAPP_NUMBER = "919XXXXXXXXX";
+const WHATSAPP_NUMBER = "919342832151";
 
 const Hero: React.FC = () => {
   /*
@@ -96,7 +96,7 @@ const Hero: React.FC = () => {
    */
 
   const handlePlanRide = () => {
-    document.getElementById("book-a-ride")?.scrollIntoView({
+    document.getElementById("booking")?.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });

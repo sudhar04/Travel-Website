@@ -8,14 +8,14 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: "Home", href: "#home" },
   { label: "Services", href: "#services" },
-  { label: "Destinations", href: "#destinations" },
+  { label: "Destinations", href: "#where-we-go" },
   { label: "Why Us", href: "#why-us" },
   { label: "How It Works", href: "#how-it-works" },
   { label: "FAQ", href: "#faq" },
   { label: "Contact", href: "#contact" },
 ];
 
-const WHATSAPP_NUMBER = "919XXXXXXXXX";
+const WHATSAPP_NUMBER = "919342832151";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -220,7 +220,7 @@ const Navbar = () => {
 
           {/* Book a Ride */}
           <a
-            href="#contact"
+            href="#booking"
             className="
               group flex h-[48px]
               items-center justify-center
