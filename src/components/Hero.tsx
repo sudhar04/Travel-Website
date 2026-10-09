@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import ScrollReveal from "scrollreveal";
@@ -113,7 +114,6 @@ const Hero: React.FC = () => {
         w-full
         overflow-hidden
         bg-[#111]
-        sm:min-h-[100svh]
         lg:h-[790px]
         lg:min-h-[720px]
       "
@@ -123,24 +123,20 @@ const Hero: React.FC = () => {
       ===================================================== */}
 
       <div className="absolute inset-0 overflow-hidden">
-
-        
-      <img
-        src={heroImage}
-        alt="Coastal road near Puducherry"
-        className="
-          absolute
-          inset-0
-          h-full
-          w-full
-          object-cover
-          object-[center_70%]
-          sm:object-[center_60%]
-          lg:object-[center_58%]
-        "
-      />
-
-
+        <img
+          src={heroImage}
+          alt="Coastal road near Puducherry"
+          className="
+            absolute
+            inset-0
+            h-full
+            w-full
+            object-cover
+            object-[center_65%]
+            sm:object-[center_60%]
+            lg:object-[center_58%]
+          "
+        />
       </div>
 
       {/* =====================================================
@@ -202,20 +198,20 @@ const Hero: React.FC = () => {
           max-w-[1320px]
           items-center
           px-5
-          pb-10
-          pt-[110px]
+          pt-[100px]
+          pb-8
+          min-[380px]:pt-[105px]
           sm:px-6
-          sm:pb-12
           sm:pt-[110px]
+          sm:pb-12
           lg:h-full
           lg:min-h-0
           lg:px-8
-          lg:pb-[80px]
           lg:pt-[120px]
+          lg:pb-[80px]
         "
       >
         <div className="w-full max-w-[700px]">
-
           {/* =================================================
               EYEBROW
           ================================================= */}
@@ -223,12 +219,14 @@ const Hero: React.FC = () => {
           <p
             className="
               hero-eyebrow
-              mb-5
-              text-[11px]
+              mb-4
+              text-[10px]
               font-semibold
               uppercase
-              tracking-[0.19em]
+              tracking-[0.15em]
               text-white/90
+              min-[380px]:text-[11px]
+              sm:mb-5
               sm:text-[12px]
               sm:tracking-[0.20em]
               lg:mb-6
@@ -245,12 +243,12 @@ const Hero: React.FC = () => {
             className="
               hero-title
               max-w-[680px]
-              text-[40px]
+              text-[36px]
               font-bold
               leading-[1.04]
               tracking-[-0.045em]
               text-white
-              min-[380px]:text-[43px]
+              min-[380px]:text-[39px]
               sm:text-[56px]
               sm:leading-[0.97]
               md:text-[64px]
@@ -272,14 +270,16 @@ const Hero: React.FC = () => {
           <p
             className="
               hero-description
-              mt-6
+              mt-4
               max-w-[650px]
-              text-[15px]
+              text-[14px]
               font-normal
-              leading-[1.65]
+              leading-[1.55]
               text-white/85
+              min-[380px]:text-[15px]
               sm:mt-7
               sm:text-[17px]
+              sm:leading-[1.65]
               lg:mt-6
               lg:text-[18px]
               lg:leading-[1.6]
@@ -297,16 +297,16 @@ const Hero: React.FC = () => {
           <div
             className="
               hero-actions
-              mt-7
+              mt-5
               flex
               flex-col
-              gap-3
+              gap-2.5
               sm:mt-8
               sm:flex-row
               sm:items-center
+              sm:gap-3
             "
           >
-
             {/* PLAN MY RIDE */}
 
             <button
@@ -315,15 +315,15 @@ const Hero: React.FC = () => {
               className="
                 group
                 flex
-                h-[52px]
+                h-[48px]
                 w-full
                 items-center
                 justify-center
                 gap-3
                 rounded-[8px]
                 bg-[#006b73]
-                px-7
-                text-[16px]
+                px-6
+                text-[15px]
                 font-semibold
                 text-white
                 shadow-[0_8px_25px_rgba(0,0,0,0.15)]
@@ -333,7 +333,10 @@ const Hero: React.FC = () => {
                 hover:bg-[#005d64]
                 hover:shadow-[0_12px_30px_rgba(0,0,0,0.22)]
                 active:translate-y-0
+                sm:h-[52px]
                 sm:w-auto
+                sm:px-7
+                sm:text-[16px]
               "
             >
               <span>Plan My Ride</span>
@@ -370,45 +373,47 @@ const Hero: React.FC = () => {
             {/* WHATSAPP */}
 
             <button
-            type="button"
-            onClick={handleWhatsApp}
-            className="
-              flex
-              h-[52px]
-              w-full
-              items-center
-              justify-center
-              gap-2
-              rounded-[8px]
-              border
-              border-white/25
-              bg-black/10
-              px-7
-              text-[16px]
-              font-semibold
-              text-white
-              backdrop-blur-[3px]
-              transition-all
-              duration-300
-              hover:border-white/45
-              hover:bg-white/10
-              sm:w-auto
-            "
-          >
-            {/* WhatsApp icon */}
-            <FaWhatsapp
-              size={20}
+              type="button"
+              onClick={handleWhatsApp}
               className="
-                transition-transform
+                group
+                flex
+                h-[48px]
+                w-full
+                items-center
+                justify-center
+                gap-2
+                rounded-[8px]
+                border
+                border-white/25
+                bg-black/10
+                px-6
+                text-[15px]
+                font-semibold
+                text-white
+                backdrop-blur-[3px]
+                transition-all
                 duration-300
-                group-hover:scale-110
+                hover:border-white/45
+                hover:bg-white/10
+                sm:h-[52px]
+                sm:w-auto
+                sm:px-7
+                sm:text-[16px]
               "
-              aria-hidden="true"
-            />
+            >
+              <FaWhatsapp
+                size={20}
+                className="
+                  transition-transform
+                  duration-300
+                  group-hover:scale-110
+                "
+                aria-hidden="true"
+              />
 
-            <span>WhatsApp Us</span>
-          </button>
-
+              <span>WhatsApp Us</span>
+            </button>
           </div>
 
           {/* =================================================
@@ -418,10 +423,10 @@ const Hero: React.FC = () => {
           <div
             className="
               hero-benefits
-              mt-7
+              mt-4
               grid
               grid-cols-1
-              gap-y-3
+              gap-y-2
               sm:mt-8
               sm:grid-cols-2
               sm:gap-x-8
@@ -437,7 +442,6 @@ const Hero: React.FC = () => {
             <Benefit text="Flexible travel" />
             <Benefit text="Direct WhatsApp booking" />
           </div>
-
         </div>
       </div>
     </section>
@@ -459,9 +463,10 @@ const Benefit: React.FC<BenefitProps> = ({ text }) => {
         flex
         items-center
         gap-2
-        text-[13px]
+        text-[12px]
         font-medium
         text-white/85
+        min-[380px]:text-[13px]
         sm:text-[14px]
       "
     >
