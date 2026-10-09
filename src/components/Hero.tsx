@@ -108,13 +108,12 @@ const Hero: React.FC = () => {
       id="home"
       className="
         relative
-        h-[720px]
-        min-h-[680px]
+        h-auto
+        min-h-[100svh]
         w-full
         overflow-hidden
         bg-[#111]
-        sm:h-[750px]
-        sm:min-h-[700px]
+        sm:min-h-[100svh]
         lg:h-[790px]
         lg:min-h-[720px]
       "
@@ -125,20 +124,22 @@ const Hero: React.FC = () => {
 
       <div className="absolute inset-0 overflow-hidden">
 
-        <img
-          src={heroImage}
-          alt="Coastal road near Puducherry"
-          className="
-            absolute
-            inset-0
-            h-full
-            w-full
-            object-cover
-            object-[center_62%]
-            sm:object-[center_60%]
-            lg:object-[center_58%]
-          "
-        />
+        
+      <img
+        src={heroImage}
+        alt="Coastal road near Puducherry"
+        className="
+          absolute
+          inset-0
+          h-full
+          w-full
+          object-cover
+          object-[center_70%]
+          sm:object-[center_60%]
+          lg:object-[center_58%]
+        "
+      />
+
 
       </div>
 
@@ -196,16 +197,18 @@ const Hero: React.FC = () => {
           z-10
           mx-auto
           flex
-          h-full
+          min-h-[100svh]
           w-full
           max-w-[1320px]
           items-center
           px-5
-          pb-[70px]
-          pt-[105px]
+          pb-10
+          pt-[110px]
           sm:px-6
-          sm:pb-[75px]
+          sm:pb-12
           sm:pt-[110px]
+          lg:h-full
+          lg:min-h-0
           lg:px-8
           lg:pb-[80px]
           lg:pt-[120px]
@@ -242,11 +245,12 @@ const Hero: React.FC = () => {
             className="
               hero-title
               max-w-[680px]
-              text-[46px]
+              text-[40px]
               font-bold
-              leading-[0.98]
+              leading-[1.04]
               tracking-[-0.045em]
               text-white
+              min-[380px]:text-[43px]
               sm:text-[56px]
               sm:leading-[0.97]
               md:text-[64px]
