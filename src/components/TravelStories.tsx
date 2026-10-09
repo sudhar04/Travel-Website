@@ -13,19 +13,19 @@ const TravelStories = () => {
     {
       quote:
         '"The pickup from Chennai Airport was on time, the car was comfortable and the driver was calm and professional. A genuinely stress-free start to our trip."',
-      customer: "Customer Name",
+      customer: "Sudharsanan ",
       trip: "Airport Transfer · Chennai Airport → Puducherry",
     },
     {
       quote:
         '"We did a round trip to Kerala with the family. Everything was coordinated over WhatsApp — no confusion, no chasing. Just a smooth journey."',
-      customer: "Customer Name",
+      customer: "Ghnana Guru",
       trip: "Round Trip · Puducherry → Kerala",
     },
     {
       quote:
         '"Booked a one-way to Bangalore for work. Clear communication from the first message to drop-off. Will travel with them again."',
-      customer: "Customer Name",
+      customer: "Raja Venkat",
       trip: "One Way · Puducherry → Bangalore",
     },
   ];

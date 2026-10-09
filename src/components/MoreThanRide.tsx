@@ -51,7 +51,7 @@ const MoreThanRide: React.FC = () => {
         className="
           absolute
           inset-0
-          bg-[#00191d]/75
+          bg-[#00191d]/55
         "
       />
 
@@ -61,9 +61,9 @@ const MoreThanRide: React.FC = () => {
           absolute
           inset-0
           bg-gradient-to-r
-          from-black/30
-          via-[#003c43]/10
-          to-black/30
+          from-black/20
+          via-transparent
+          to-black/20
         "
       />
 

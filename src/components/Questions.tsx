@@ -15,52 +15,52 @@ const questions: Question[] = [
   {
     question: "Can I book a one-way trip?",
     answer:
-      "Yes. One-way trips are available for airport transfers, intercity travel, and other destinations. Share your pickup and drop-off details and we'll coordinate the journey.",
+      "Absolutely. One-way outstation trips are available to Chennai, Bangalore, Kerala and destinations across India.",
   },
   {
     question: "Can I book a round trip?",
     answer:
-      "Yes. Round trips can be arranged based on your travel dates, route, and preferred schedule. We'll coordinate the complete journey with you.",
+      "Yes. Select 'Round Trip' in the booking form and add your return date — we’ll hold the return and coordinate both legs with you.",
   },
   {
     question: "Do you provide outstation travel?",
     answer:
-      "Yes. We provide comfortable outstation travel from Puducherry to destinations across Tamil Nadu and nearby states.",
+      "We do. Outstation travel from Puducherry across Tamil Nadu, Karnataka, Kerala and beyond is a core part of what we offer.",
   },
   {
     question: "Can I travel outside Tamil Nadu?",
     answer:
-      "Yes. Inter-state journeys can be arranged depending on the destination, vehicle, and travel requirements.",
+      "Yes. We travel to Bangalore, Kerala, Goa, Hyderabad and other destinations across India. If you have a custom destination, just tell us where.",
   },
   {
     question: "How do I confirm my booking?",
     answer:
-      "Once we receive your travel request, we'll confirm the availability, vehicle, timing, and fare with you. Your booking is confirmed after the details are finalized.",
+      "Submitting the form sends a request — it is not a confirmed booking. After you message us on WhatsApp, our team confirms the vehicle, driver and fare with you directly.",
   },
   {
     question: "How is the fare decided?",
     answer:
-      "The fare depends on factors such as the route, distance, trip type, vehicle, travel duration, and any additional requirements.",
+      "Fare depends on distance, trip type, vehicle and dates. We share a clear fare with you on WhatsApp before anything is confirmed — no hidden charges.",
   },
   {
     question: "Can I request a specific vehicle?",
     answer:
-      "Yes. You can let us know your preferred vehicle type while making the travel request. Availability will be confirmed before the trip.",
+      "Yes. Mention your preference in the additional requirements field or on WhatsApp, and we'll do our best to match it based on availability.",
   },
   {
     question: "How far in advance should I book?",
     answer:
-      "We recommend booking as early as possible, especially for airport transfers, long-distance journeys, weekends, and peak travel periods.",
+      "The earlier the better, especially for weekends and festival dates. For airport transfers, a day's notice usually works. We'll always try to accommodate last-minute requests.",
   },
   {
     question: "What happens after I submit the travel request?",
     answer:
-      "We'll review your travel details, check availability, and contact you to confirm the journey, vehicle, timing, and fare.",
+      "Your request is saved and a WhatsApp message is prepared. Open WhatsApp to send it, and our team will coordinate the rest with you.",
   },
 ];
 
 const Questions = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleQuestion = (index: number) => {
     setOpenIndex((current) => (current === index ? null : index));

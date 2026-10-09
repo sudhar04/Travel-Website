@@ -185,6 +185,18 @@ type PlaceCardProps = {
 };
 
 const PlaceCard = ({ place }: PlaceCardProps) => {
+
+  const handlePlanVisit = () => {
+  const bookingSection = document.getElementById("booking");
+
+    if (bookingSection) {
+      bookingSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   return (
     <article
       className="
@@ -334,7 +346,7 @@ const PlaceCard = ({ place }: PlaceCardProps) => {
         {/* =================================================
             HOVER ARROW
         ================================================== */}
-        <span
+       {/*  <span
           className="
             absolute
             bottom-[18px]
@@ -368,7 +380,7 @@ const PlaceCard = ({ place }: PlaceCardProps) => {
             "
             aria-hidden="true"
           />
-        </span>
+        </span> */}
       </div>
 
       {/* =====================================================
@@ -406,11 +418,13 @@ const PlaceCard = ({ place }: PlaceCardProps) => {
         {/* CTA */}
         <button
           type="button"
+          onClick={handlePlanVisit}
           className="
             group/link
             mt-auto
             flex
             w-fit
+            cursor-pointer
             items-center
             gap-[7px]
             pt-[17px]

@@ -5,7 +5,7 @@ import ScrollReveal from "scrollreveal";
 
 import heroImage from "../assets/hero-road1.png";
 
-const WHATSAPP_NUMBER = "919342832151";
+const WHATSAPP_NUMBER = "918189845211";
 
 const Hero: React.FC = () => {
   /*

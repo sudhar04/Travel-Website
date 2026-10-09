@@ -11,7 +11,7 @@ interface FooterColumnProps {
   links: FooterLink[];
 }
 
-const WHATSAPP_NUMBER = "919342832151";
+const WHATSAPP_NUMBER = "918189845211";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -97,20 +97,20 @@ const Footer = () => {
             grid
             grid-cols-1
             gap-12
-
+            text-center
             sm:grid-cols-2
             sm:gap-x-10
             sm:gap-y-12
-
             lg:grid-cols-[2.15fr_1fr_1fr_1fr]
             lg:gap-12
+            lg:text-left
           "
         >
           {/* =================================================
               BRAND COLUMN
           ================================================== */}
 
-          <div className="max-w-[440px]">
+          <div className="mx-auto flex max-w-[440px] flex-col items-center text-center lg:mx-0 lg:items-start lg:text-left">
             {/* Logo */}
             <a
               href="#home"
@@ -244,16 +244,16 @@ const Footer = () => {
               CONTACT
           ================================================== */}
 
-          <div>
+          <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
             <FooterHeading>Contact</FooterHeading>
 
-            <div className="mt-5 flex flex-col gap-[14px]">
+            <div className="mt-5 flex w-full flex-col items-center gap-[14px] lg:items-start">
               {/* Phone */}
               <ContactItem
                 icon={<PhoneIcon />}
-                href="tel:+919876543210"
+                href="tel:+918189845211"
               >
-                +91 98765 43210
+                +91 81898 45211
               </ContactItem>
 
               {/* Email */}
@@ -319,13 +319,14 @@ const Footer = () => {
           className="
             flex
             flex-col
+            items-center
             gap-5
             pt-7
-
+            text-center
             sm:flex-row
-            sm:items-center
             sm:justify-between
             sm:gap-6
+            sm:text-left
           "
         >
           {/* Copyright */}
@@ -341,13 +342,7 @@ const Footer = () => {
 
           {/* Legal links */}
           <div
-            className="
-              flex
-              flex-wrap
-              items-center
-              gap-6
-              text-[13px]
-            "
+            className="flex flex-wrap items-center justify-center gap-6 text-[13px]"
           >
             <a
               href="#privacy"
@@ -396,7 +391,9 @@ const FooterColumn = ({
           mt-5
           flex
           flex-col
+          items-center
           gap-[10px]
+          lg:items-start
         "
       >
         {links.map((link) => (
@@ -405,6 +402,7 @@ const FooterColumn = ({
             href={link.href}
             className="
               w-fit
+              text-center
               text-[15px]
               leading-6
               text-[#536273]

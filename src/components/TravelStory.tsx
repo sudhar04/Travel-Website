@@ -15,6 +15,7 @@ type Story = {
   id: number;
   name: string;
   image: string;
+  imagePosition?: string;
 };
 
 const stories: Story[] = [
@@ -22,31 +23,37 @@ const stories: Story[] = [
     id: 1,
     name: "White Town, Puducherry",
     image: frenchQuarter,
+    imagePosition: "object-center",
   },
   {
     id: 2,
     name: "Indian highway at sunset",
     image: sunsetRoad,
+    imagePosition: "object-center",
   },
   {
     id: 3,
     name: "Kerala Backwaters Road",
     image: keralaRoad,
+    imagePosition: "object-center",
   },
   {
     id: 4,
     name: "Kerala Western Ghats",
     image: roadTrip,
+    imagePosition: "object-[center_25%]",
   },
   {
     id: 5,
     name: "Mahabalipuram shore temple",
     image: carInterior,
+    imagePosition: "object-center",
   },
   {
     id: 6,
     name: "Bangalore Skyline",
     image: bangalore,
+    imagePosition: "object-[center_50%]",
   },
 ];
 
@@ -352,30 +359,22 @@ const StoryCard = ({
         alt={story.name}
         loading="lazy"
         draggable={false}
-        className="
+        className={`
           absolute
           inset-0
-
           z-0
-
           block
-
           h-full
           w-full
-
           max-w-none
-
           object-cover
-          object-center
-
+          ${story.imagePosition ?? "object-center"}
           select-none
-
           transition-transform
           duration-[900ms]
           ease-[cubic-bezier(0.22,1,0.36,1)]
-
           group-hover:scale-[1.055]
-        "
+        `}
       />
 
       {/* =====================================================

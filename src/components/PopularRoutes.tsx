@@ -177,14 +177,24 @@ type RouteCardProps = {
 };
 
 const RouteCard = ({ route }: RouteCardProps) => {
+  const handleBookRoute = () => {
+    const bookingSection = document.getElementById("booking");
+
+    bookingSection?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
   return (
     <button
       type="button"
+      onClick={handleBookRoute}
       className="
         group
         relative
         h-[242px]
         w-full
+        cursor-pointer
         overflow-hidden
         rounded-[15px]
         bg-[#162022]

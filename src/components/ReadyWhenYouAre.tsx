@@ -15,7 +15,7 @@ const ReadyWhenYouAre = () => {
 
   const handleWhatsApp = () => {
     window.open(
-      "https://wa.me/919342832151",
+      "https://wa.me/918189845211",
       "_blank",
       "noopener,noreferrer"
     );

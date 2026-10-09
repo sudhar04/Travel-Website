@@ -16,7 +16,7 @@ const navItems: NavItem[] = [
   { label: "Contact", href: "#contact" },
 ];
 
-const WHATSAPP_NUMBER = "919342832151";
+const WHATSAPP_NUMBER = "918189845211";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
