@@ -136,7 +136,7 @@ const BookingForm = () => {
      * 919342832151
      */
 
-    const WHATSAPP_NUMBER = "919342832151";
+    const WHATSAPP_NUMBER = "918189845211";
 
     /*
      * =======================================================
@@ -664,13 +664,15 @@ const labelClasses = `
   text-[#526070]
 `;
 
+
+
 const inputClasses = `
   block
-  h-[40px]
+  h-[42px]
   w-full
   rounded-[8px]
   border
-  border-[#dedbd6]
+  border-[#b8c0c5]
   bg-white
   px-[14px]
   text-[15px]
@@ -679,10 +681,10 @@ const inputClasses = `
   transition-all
   duration-200
   placeholder:text-[#7b8491]
-  hover:border-[#c9c5bf]
-  focus:border-[#006b73]
+  hover:border-[#89969e]
+  focus:border-[#007681]
   focus:ring-[3px]
-  focus:ring-[#006b73]/10
+  focus:ring-[#007681]/15
 `;
 
 export default BookingForm;

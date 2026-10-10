@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 
@@ -21,7 +22,43 @@ const WHATSAPP_NUMBER = "918189845211";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
+  // Track the currently visible section.
+  useEffect(() => {
+    const sectionIds = navItems.map((item) =>
+      item.href.replace("#", "")
+    );
+
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => section !== null);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleSections = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort(
+            (a, b) =>
+              b.intersectionRatio - a.intersectionRatio
+          );
+
+        if (visibleSections.length > 0) {
+          setActiveSection(visibleSections[0].target.id);
+        }
+      },
+      {
+        rootMargin: "-25% 0px -60% 0px",
+        threshold: 0,
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Change navbar background when scrolling.
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
@@ -29,14 +66,16 @@ const Navbar = () => {
 
     handleScroll();
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  // Close mobile menu when resizing to desktop
+  // Close mobile menu when resizing to desktop.
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -51,7 +90,7 @@ const Navbar = () => {
     };
   }, []);
 
-  // Smooth scroll without changing the URL
+  // Smooth scrolling without changing the URL.
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
 
@@ -59,6 +98,8 @@ const Navbar = () => {
     const section = document.getElementById(sectionId);
 
     if (section) {
+      setActiveSection(sectionId);
+
       section.scrollIntoView({
         behavior: "smooth",
         block: "start",
@@ -93,10 +134,7 @@ const Navbar = () => {
           px-5 sm:px-6 lg:px-8
         "
       >
-        {/* =====================================================
-            LOGO
-        ====================================================== */}
-
+        {/* LOGO */}
         <a
           href="#home"
           onClick={(e) => {
@@ -106,7 +144,6 @@ const Navbar = () => {
           className="group flex shrink-0 items-center gap-3"
           aria-label="Karai Travels Home"
         >
-          {/* K Circle */}
           <span
             className="
               flex h-[40px] w-[40px]
@@ -121,69 +158,72 @@ const Navbar = () => {
             K
           </span>
 
-          {/* Brand */}
           <span
             className={`
               text-[20px] font-bold tracking-[-0.02em]
               transition-colors duration-300
-              ${
-                isScrolled
-                  ? "text-[#171717]"
-                  : "text-white"
-              }
+              ${isScrolled ? "text-[#171717]" : "text-white"}
             `}
           >
             Karai<span className="font-semibold">Travels</span>
           </span>
         </a>
 
-        {/* =====================================================
-            DESKTOP NAVIGATION
-        ====================================================== */}
-
+        {/* DESKTOP NAVIGATION */}
         <div className="hidden items-center lg:flex">
           <div className="flex items-center gap-[30px]">
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(item.href);
-                }}
-                className={`
-                  relative py-2
-                  text-[15px] font-medium
-                  transition-colors duration-300
-                  ${
-                    isScrolled
-                      ? "text-[#3a3a3a] hover:text-[#006b73]"
-                      : "text-white/95 hover:text-white"
-                  }
+            {navItems.map((item) => {
+              const isActive =
+                activeSection === item.href.replace("#", "");
 
-                  after:absolute
-                  after:bottom-0
-                  after:left-0
-                  after:h-[2px]
-                  after:w-0
-                  after:bg-[#007c85]
-                  after:transition-all
-                  after:duration-300
-                  hover:after:w-full
-                `}
-              >
-                {item.label}
-              </a>
-            ))}
+              return (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  aria-current={isActive ? "location" : undefined}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(item.href);
+                  }}
+                  className={`
+                    relative py-2
+                    text-[15px] font-medium
+                    transition-colors duration-300
+
+                    ${
+                      isActive
+                        ? isScrolled
+                          ? "font-semibold text-[#006b73]"
+                          : "font-semibold text-white"
+                        : isScrolled
+                          ? "text-[#3a3a3a] hover:text-[#006b73]"
+                          : "text-white/95 hover:text-white"
+                    }
+
+                    after:absolute
+                    after:bottom-0
+                    after:left-0
+                    after:h-[2px]
+                    after:bg-[#007c85]
+                    after:transition-all
+                    after:duration-300
+
+                    ${
+                      isActive
+                        ? "after:w-full"
+                        : "after:w-0 hover:after:w-full"
+                    }
+                  `}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </div>
         </div>
 
-        {/* =====================================================
-            DESKTOP ACTIONS
-        ====================================================== */}
-
+        {/* DESKTOP ACTIONS */}
         <div className="hidden items-center gap-5 lg:flex">
-          {/* WhatsApp */}
           <button
             type="button"
             onClick={handleWhatsApp}
@@ -203,11 +243,9 @@ const Navbar = () => {
               className="transition-transform duration-300 group-hover:scale-110"
               aria-hidden="true"
             />
-
             <span>WhatsApp Us</span>
           </button>
 
-          {/* Book a Ride */}
           <a
             href="#booking"
             onClick={(e) => {
@@ -223,8 +261,8 @@ const Navbar = () => {
               text-[15px] font-semibold text-white
               shadow-sm
               transition-all duration-300
-              hover:bg-[#005c63]
               hover:-translate-y-[1px]
+              hover:bg-[#005c63]
               hover:shadow-lg
               active:translate-y-0
             "
@@ -233,10 +271,7 @@ const Navbar = () => {
           </a>
         </div>
 
-        {/* =====================================================
-            MOBILE MENU BUTTON
-        ====================================================== */}
-
+        {/* MOBILE MENU BUTTON */}
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen((prev) => !prev)}
@@ -260,7 +295,6 @@ const Navbar = () => {
           aria-expanded={isMobileMenuOpen}
         >
           {isMobileMenuOpen ? (
-            /* X icon */
             <svg
               width="25"
               height="25"
@@ -274,7 +308,6 @@ const Navbar = () => {
                 strokeWidth="2"
                 strokeLinecap="round"
               />
-
               <path
                 d="M18 6L6 18"
                 stroke="currentColor"
@@ -283,7 +316,6 @@ const Navbar = () => {
               />
             </svg>
           ) : (
-            /* Hamburger */
             <svg
               width="25"
               height="25"
@@ -297,14 +329,12 @@ const Navbar = () => {
                 strokeWidth="2"
                 strokeLinecap="round"
               />
-
               <path
                 d="M4 12H20"
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
               />
-
               <path
                 d="M4 17H20"
                 stroke="currentColor"
@@ -316,10 +346,7 @@ const Navbar = () => {
         </button>
       </nav>
 
-      {/* =====================================================
-          MOBILE MENU
-      ====================================================== */}
-
+      {/* MOBILE MENU */}
       <div
         className={`
           overflow-hidden
@@ -335,39 +362,49 @@ const Navbar = () => {
         `}
       >
         <div className="mx-auto max-w-[1320px] px-5 pb-6 pt-3 sm:px-6">
-          {/* Mobile Navigation Links */}
+          {/* MOBILE NAVIGATION LINKS */}
           <div className="flex flex-col">
-            {navItems.map((item, index) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(item.href);
-                }}
-                className={`
-                  flex min-h-[50px]
-                  items-center
-                  border-b border-gray-100
-                  text-[15px] font-medium
-                  text-[#303030]
-                  transition-colors
-                  hover:text-[#006b73]
-                  ${
-                    index === navItems.length - 1
-                      ? "border-b-0"
-                      : ""
-                  }
-                `}
-              >
-                {item.label}
-              </a>
-            ))}
+            {navItems.map((item, index) => {
+              const isActive =
+                activeSection === item.href.replace("#", "");
+
+              return (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  aria-current={isActive ? "location" : undefined}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(item.href);
+                  }}
+                  className={`
+                    flex min-h-[50px]
+                    items-center
+                    border-b border-gray-100
+                    text-[15px] font-medium
+                    transition-colors
+
+                    ${
+                      isActive
+                        ? "font-semibold text-[#006b73]"
+                        : "text-[#303030] hover:text-[#006b73]"
+                    }
+
+                    ${
+                      index === navItems.length - 1
+                        ? "border-b-0"
+                        : ""
+                    }
+                  `}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </div>
 
-          {/* Mobile Actions */}
+          {/* MOBILE ACTIONS */}
           <div className="mt-5 flex flex-col gap-3">
-            {/* WhatsApp */}
             <button
               type="button"
               onClick={() => {
@@ -388,15 +425,10 @@ const Navbar = () => {
                 hover:text-white
               "
             >
-              <FaWhatsapp
-                size={20}
-                aria-hidden="true"
-              />
-
+              <FaWhatsapp size={20} aria-hidden="true" />
               WhatsApp Us
             </button>
 
-            {/* Book Ride */}
             <a
               href="#booking"
               onClick={(e) => {

@@ -5,6 +5,13 @@ import localRidesImage from "../assets/local-rides.jpg";
 import outstationImage from "../assets/outstation.jpg";
 import tourTripsImage from "../assets/tour-trips.jpg";
 
+import {
+  LuPlane,
+  LuMapPin,
+  LuNavigation,
+  LuCompass,
+} from "react-icons/lu";
+
 interface OfferCard {
   title: string;
   description: string;
@@ -20,7 +27,7 @@ const WhatWeOffer = () => {
       description:
         "Reliable pickup and drop for Chennai Airport and beyond.",
       image: airportImage,
-      href: "#book-a-ride",
+      href: "#booking",
       icon: <PlaneIcon />,
     },
     {
@@ -28,7 +35,7 @@ const WhatWeOffer = () => {
       description:
         "Comfortable travel around Puducherry and nearby destinations.",
       image: localRidesImage,
-      href: "#book-a-ride",
+      href: "#booking",
       icon: <LocationIcon />,
     },
     {
@@ -36,7 +43,7 @@ const WhatWeOffer = () => {
       description:
         "Travel from Puducherry to Chennai, Bangalore, Kerala and beyond.",
       image: outstationImage,
-      href: "#book-a-ride",
+      href: "#booking",
       icon: <RouteIcon />,
     },
     {
@@ -44,7 +51,7 @@ const WhatWeOffer = () => {
       description:
         "Flexible journeys for families, groups and multi-day travel.",
       image: tourTripsImage,
-      href: "#book-a-ride",
+      href: "#booking",
       icon: <CompassIcon />,
     },
   ];
@@ -193,8 +200,7 @@ const OfferCard = ({ offer }: OfferCardProps) => {
           IMAGE
       ==================================================== */}
 
-      <a
-        href={offer.href}
+      <div
         className="
           relative
           block
@@ -244,36 +250,28 @@ const OfferCard = ({ offer }: OfferCardProps) => {
         ================================================== */}
 
         <div
-          className="
-            absolute
-            left-4
-            top-4
-
-            flex
-            h-[42px]
-            w-[42px]
-            items-center
-            justify-center
-
-            rounded-[8px]
-
-            bg-white/90
-            text-[#006b73]
-
-            shadow-[0_3px_12px_rgba(0,0,0,0.08)]
-
-            backdrop-blur-sm
-
-            transition-all
-            duration-300
-
-            group-hover:scale-105
-            group-hover:bg-white
-          "
+          
+        className="
+          absolute
+          left-4
+          top-4
+          flex
+          h-[44px]
+          w-[44px]
+          items-center
+          justify-center
+          rounded-[9px]
+          bg-[#e2edf2]
+          text-[#005568]
+          shadow-[0_2px_8px_rgba(0,0,0,0.08)]
+          transition-all
+          duration-300
+          group-hover:scale-105
+        "
         >
           {offer.icon}
         </div>
-      </a>
+      </div>
 
       {/* ===================================================
           CONTENT
@@ -326,26 +324,31 @@ const OfferCard = ({ offer }: OfferCardProps) => {
 
         {/* Request */}
 
-        <a
-          href={offer.href}
-          className="
-            group/link
-            mt-4
+          <a
+            href={offer.href}
+            onClick={(e) => {
+              e.preventDefault();
 
-            inline-flex
-            items-center
-            gap-1.5
-
-            text-[13px]
-            font-semibold
-            text-[#006b73]
-
-            transition-colors
-            duration-200
-
-            hover:text-[#004f56]
-          "
-        >
+              document.getElementById("booking")?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }}
+            className="
+              group/link
+              mt-4
+              inline-flex
+              cursor-pointer
+              items-center
+              gap-1.5
+              text-[13px]
+              font-semibold
+              text-[#006b73]
+              transition-colors
+              duration-200
+              hover:text-[#004f56]
+            "
+          >
           <span>Request this ride</span>
 
           <svg
@@ -387,134 +390,24 @@ const OfferCard = ({ offer }: OfferCardProps) => {
    ICONS
 ============================================================= */
 
+
 const PlaneIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M21 4.8C21 4.8 19.5 4 18.2 4.5L13.8 6.4L7.3 3.2C6.8 3 6.2 3.1 5.8 3.5L5 4.3L10.8 8.2L7.3 9.8L4.5 8.8L3.5 9.8L6.3 12L10.2 11L14.2 8.7L18.4 7.5C19.9 7 21 5.8 21 4.8Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-
-    <path
-      d="M10.5 11L8.5 19.5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-
-    <path
-      d="M7.5 17H11.5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-  </svg>
+  <LuPlane size={21} strokeWidth={1.8} aria-hidden="true" />
 );
 
 const LocationIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M19 10C19 14.5 12 21 12 21C12 21 5 14.5 5 10C5 6.13 8.13 3 12 3C15.87 3 19 6.13 19 10Z"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-
-    <circle
-      cx="12"
-      cy="10"
-      r="2.5"
-      stroke="currentColor"
-      strokeWidth="1.7"
-    />
-  </svg>
+  <LuMapPin size={21} strokeWidth={1.8} aria-hidden="true" />
 );
 
 const RouteIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M5 19L19 5"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-    />
-
-    <path
-      d="M7 7H5V9"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-
-    <path
-      d="M17 17H19V15"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-
-    <path
-      d="M5 5L8 5"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-    />
-
-    <path
-      d="M16 19L19 19"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-    />
-  </svg>
+  <LuNavigation size={21} strokeWidth={1.8} aria-hidden="true" />
 );
 
 const CompassIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    aria-hidden="true"
-  >
-    <circle
-      cx="12"
-      cy="12"
-      r="9"
-      stroke="currentColor"
-      strokeWidth="1.7"
-    />
-
-    <path
-      d="M15.5 8.5L13.7 13.7L8.5 15.5L10.3 10.3L15.5 8.5Z"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinejoin="round"
-    />
-  </svg>
+  <LuCompass size={21} strokeWidth={1.8} aria-hidden="true" />
 );
+
+
+
 
 export default WhatWeOffer;

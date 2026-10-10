@@ -374,6 +374,7 @@ const Footer = () => {
   );
 };
 
+
 /* =============================================================
    FOOTER COLUMN
 ============================================================= */
@@ -382,6 +383,33 @@ const FooterColumn = ({
   title,
   links,
 }: FooterColumnProps) => {
+  const handleFooterLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    // Keep normal behavior for external URLs.
+    if (!href.startsWith("#")) return;
+
+    e.preventDefault();
+
+    const sectionId = href.slice(1);
+    const targetSection = document.getElementById(sectionId);
+
+    if (targetSection) {
+      targetSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+
+    // Remove any existing hash without reloading the page.
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + window.location.search
+    );
+  };
+
   return (
     <div>
       <FooterHeading>{title}</FooterHeading>
@@ -400,6 +428,9 @@ const FooterColumn = ({
           <a
             key={link.label}
             href={link.href}
+            onClick={(e) =>
+              handleFooterLinkClick(e, link.href)
+            }
             className="
               w-fit
               text-center
@@ -443,6 +474,7 @@ const FooterHeading = ({
   );
 };
 
+
 /* =============================================================
    CONTACT ITEM
 ============================================================= */
@@ -460,9 +492,22 @@ const ContactItem = ({
   href,
   external = false,
 }: ContactItemProps) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (external || !href.startsWith("#")) return;
+
+    e.preventDefault();
+
+    const sectionId = href.slice(1);
+    document.getElementById(sectionId)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
     <a
       href={href}
+      onClick={handleClick}
       {...(external
         ? {
             target: "_blank",
@@ -502,6 +547,7 @@ const ContactItem = ({
     </a>
   );
 };
+
 
 /* =============================================================
    ICONS
