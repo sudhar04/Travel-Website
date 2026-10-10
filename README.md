@@ -4,17 +4,6 @@
   <strong>A modern, responsive travel and cab booking website built with React, TypeScript, Vite and Tailwind CSS.</strong>
 </p>
 
-
-## 📚 Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Deployment](#deployment)
-
-
 ---
 
 
@@ -149,6 +138,21 @@ The visual system uses:
 | JavaScript / TypeScript | Application logic |
 | Git | Version control |
 | GitHub | Source code hosting |
+
+---
+
+
+## 🧩 Key Technical Implementations
+
+- **Reusable Components:** Built the website using modular React components.
+- **Type Safety:** Used TypeScript to improve code reliability and maintainability.
+- **Responsive Layouts:** Adapted layouts, typography, and navigation for mobile, tablet, and desktop.
+- **Smooth Scrolling:** Connected navigation links and calls to action to relevant website sections.
+- **Active Navigation:** Highlighted the relevant navigation link based on the current section, if implemented.
+- **WhatsApp Integration:** Added direct WhatsApp enquiry actions for ride-related communication.
+- **Interactive Destination Map:** Displayed travel destinations and route interactions, if implemented.
+- **Animations & Transitions:** Used subtle visual effects to enhance the browsing experience.
+- **Custom Branding:** Added Karai Travels branding and a custom favicon.
 
 ---
 
