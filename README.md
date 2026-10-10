@@ -4,14 +4,16 @@
   <strong>A modern, responsive travel and cab booking website built with React, TypeScript, Vite and Tailwind CSS.</strong>
 </p>
 
-<p align="center">
-  <a href="#overview">Overview</a> •
-  <a href="#features">Features</a> •
-  <a href="#tech-stack">Tech Stack</a> •
-  <a href="#project-structure">Project Structure</a> •
-  <a href="#getting-started">Getting Started</a> •
-  <a href="#deployment">Deployment</a>
-</p>
+
+## 📚 Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Deployment](#deployment)
+
 
 ---
 
