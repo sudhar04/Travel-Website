@@ -48,6 +48,8 @@ The design is focused on creating a **premium, trustworthy, modern and easy-to-u
 - Direct `WhatsApp Us` CTA
 - Travel service highlights
 
+---
+
 ### 🚗 Travel Services
 
 The website presents the available travel services in a structured and easy-to-understand format.
@@ -62,6 +64,8 @@ Examples include:
 
 > Service information can be updated based on the actual services offered by the business.
 
+---
+
 ### 📍 Destinations
 
 Dedicated destination content helps visitors understand the areas and routes covered by the service.
@@ -73,6 +77,8 @@ The website can showcase destinations such as:
 - Bangalore
 - Kerala
 - Other destinations across India
+
+---
 
 ### 📱 WhatsApp Booking
 
@@ -86,11 +92,15 @@ Visitors can use the WhatsApp CTA to:
 - Enquire about routes
 - Contact the travel service
 
+---
+
 ### 🗓️ Ride Planning
 
 The `Plan My Ride` CTA guides visitors toward the booking/planning section.
 
 The booking experience is designed around collecting the information required to understand a customer's journey.
+
+---
 
 ### ❓ FAQ Section
 
@@ -99,6 +109,8 @@ Frequently asked questions provide visitors with quick answers before contacting
 ### 📞 Contact Section
 
 The website provides direct contact options and clear calls to action for customers who want to make an enquiry.
+
+---
 
 ### 📱 Responsive Design
 
@@ -109,6 +121,8 @@ The interface is designed to work across:
 - Laptops
 - Desktop monitors
 - Large screens
+
+---
 
 ### 🎨 Premium UI
 
