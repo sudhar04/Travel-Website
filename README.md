@@ -106,6 +106,8 @@ The booking experience is designed around collecting the information required to
 
 Frequently asked questions provide visitors with quick answers before contacting the business.
 
+--- 
+
 ### 📞 Contact Section
 
 The website provides direct contact options and clear calls to action for customers who want to make an enquiry.
