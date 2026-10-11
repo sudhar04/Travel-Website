@@ -259,9 +259,9 @@ const Footer = () => {
               {/* Email */}
               <ContactItem
                 icon={<MailIcon />}
-                href="mailto:hello@karaitravels.in"
+                href="mailto:karaitravelspondy@gmail.com"
               >
-                hello@karaitravels.in
+                karaitravelspondy@gmail.com
               </ContactItem>
 
               {/* Instagram */}
